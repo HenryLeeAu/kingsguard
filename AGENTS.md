@@ -31,6 +31,24 @@ starting with React.
   can be demonstrated.
 - Preserve existing user changes and avoid unrelated refactoring.
 
+## Task tracking with Beads
+
+- Use `bd` (Beads) for development tasks and dependencies. Do not maintain a
+  separate markdown TODO list.
+- Run `bd prime` at the start of a session and after context compaction. On a fresh
+  clone, run `bd bootstrap` first to restore the database from the configured remote.
+- Run `bd dolt pull`, then `bd ready` to find work and `bd show <id>` to read its
+  scope. Create an issue with a description and acceptance criteria for new work.
+- Claim a task with `bd update <id> --claim` before implementation. Add real
+  prerequisites with `bd dep add <issue> <depends-on>`; do not invent dependencies
+  between independent tasks.
+- Follow the completion requirements below. Record validation and the PR URL in
+  the issue, close completed implementation tasks with `bd close <id>`, then run
+  `bd dolt push` to persist task updates. Closing a task does not authorize merging
+  its PR.
+- Git push and `bd dolt push` are separate: push both code and task updates.
+  Keep local databases out of Git. See `.beads/README.md` for setup and storage.
+
 ## Completion requirements
 
 - When adding or changing a rule, include valid cases, invalid cases, and tests
