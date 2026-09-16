@@ -44,5 +44,5 @@ assignments such as `ref.current.tabIndex = -1`. Prefer `tabIndex={-1}` or a JSX
 prop derived from React state. Focus, measurements, scrolling, and ordinary data
 refs remain allowed.
 
-See the [full rule documentation](https://github.com/HenryLeeAu/kingsguard/blob/main/docs/rules/no-imperative-dom-state.md)
+See the [full rule documentation](https://github.com/kingsguard-dev/kingsguard/blob/main/docs/rules/no-imperative-dom-state.md)
 for exact coverage, exceptions, and limitations. No automatic fix is offered.
