@@ -37,7 +37,12 @@ bd dolt push
 ```
 
 Task completion means implementation and validation are complete and the PR is
-ready for review. It does not mean the PR has been merged.
+ready for user review after the two-reviewer process in `AGENTS.md`. The same
+process applies to slice specifications before implementation and to completed
+design deliverables before dependent work starts. A third neutral reviewer
+resolves disagreements using evidence; unclear product intent goes to the user.
+The coordinator records reviewed versions, findings, fix verification, and
+decisions in Beads. It does not mean the PR has been merged.
 
 For new work, provide a description and acceptance criteria:
 
