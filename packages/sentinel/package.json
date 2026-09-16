@@ -1,0 +1,37 @@
+{
+  "name": "@kingsguard/eslint-plugin-sentinel",
+  "version": "0.1.0",
+  "description": "Framework-aware ESLint rules for declarative UIs.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HenryLeeAu/kingsguard.git",
+    "directory": "packages/sentinel"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "prepack": "pnpm build"
+  },
+  "peerDependencies": {
+    "eslint": "^10.0.0",
+    "typescript": ">=4.8.4 <6.1.0"
+  },
+  "dependencies": {
+    "@typescript-eslint/utils": "^8.70.0"
+  }
+}
