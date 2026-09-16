@@ -44,10 +44,26 @@ file. Named import aliases and default/namespace React imports are recognized.
 Lexical scope resolution distinguishes shadowed variables and imports. Reassigned
 ref variables are skipped.
 
+The declaration must bind the ref object directly, such as
+`const banana = useRef(null)`. A destructured value such as
+`const { current: banana } = useRef(callback)` is not recognized as a ref object:
+here `banana` is the stored callback, and its own properties are not DOM evidence.
+
 It reports assignments (including compound assignments) and increments/decrements
 to `ref.current` properties: `tabIndex`, `className`, `hidden`, `disabled`, `checked`,
 `value`, `textContent`, and `innerHTML`. String-literal bracket access and TypeScript
 assertions/non-null expressions are supported.
+
+Assignment targets inside array and object destructuring are also checked,
+including nested patterns, defaults, and rest targets:
+
+```js
+[ref.current.value] = values;
+({ checked: ref.current.checked = false } = data);
+```
+
+Reads in computed keys or default values are not mutations. For example,
+`[value = ref.current.value] = values` is allowed.
 
 Use JSX props for attributes, children for text, and controlled state where
 appropriate. Imperative focus (`ref.current.focus()`), scrolling, measurements,
@@ -59,6 +75,7 @@ reads, ref initialization, and ordinary data refs are allowed.
   hooks. Refs attached only to custom components do not establish DOM ownership.
 - No detection of `setAttribute`, `classList`, nested `style` mutations,
   `Object.assign`, `delete`, destructured DOM aliases, or dynamic property keys.
+- Assignment targets in `for...in` and `for...of` loop headers are not checked.
 - A ref with no matching JSX binding is skipped, even with a DOM type annotation.
 - The same binding attached to a native element supplies evidence, not a proof
   about its runtime value. Third-party widgets and deliberately uncontrolled
