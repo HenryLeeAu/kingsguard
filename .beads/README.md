@@ -31,7 +31,7 @@ and run `pnpm check`. Commit, push, and open a PR following `AGENTS.md`. Record
 the validation result and PR link before closing the implementation task:
 
 ```sh
-bd update <id> --notes "Validation result and PR URL"
+bd update <id> --append-notes "Validation result and PR URL"
 bd close <id> --reason "Implemented and validated; PR ready for review"
 bd dolt push
 ```
@@ -57,7 +57,15 @@ is unavailable; use `bd doctor --check=artifacts`,
 
 Git tracks the Beads configuration and these instructions. The task database is
 stored locally under `.beads/embeddeddolt/`, which is ignored by Git. Embedded
-mode allows one writer at a time; run mutating bd commands sequentially.
+mode uses database locking; serialize all bd commands, including reads and sync,
+and wait for each process to exit before starting the next.
+
+For parallel slice work, follow `AGENTS.md`: each implementation worker gets a
+separate worktree and branch, while one coordinator owns all Beads operations.
+Workers receive task/context snapshots and return results to the coordinator;
+they do not run bd or initialize their own task databases. The standalone command
+examples above apply to the coordinator (or a solo developer), not each worker.
+Integrate overlapping changes sequentially and run `pnpm check` after each slice.
 
 Task data is synchronized separately with `bd dolt push` and `bd dolt pull` to
 `refs/dolt/data` on the configured repository remote. A normal `git push` does

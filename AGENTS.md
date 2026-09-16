@@ -49,6 +49,40 @@ starting with React.
 - Git push and `bd dolt push` are separate: push both code and task updates.
   Keep local databases out of Git. See `.beads/README.md` for setup and storage.
 
+## Parallel slice development
+
+- Before implementation, give each slice a Beads issue with scope, exclusions,
+  acceptance tests, and real dependencies. Have a fresh-context subagent review
+  the specifications against the repository; resolve findings before dispatch.
+  Specification review does not approve a future design that is still a task.
+- Run independent, ready slices concurrently when useful. A design investigation
+  may run alongside unrelated implementation, but its dependent implementation
+  must wait for the design and any required review. Shared files alone are not a
+  task dependency.
+- Give each implementation worker a separate Git worktree and task branch from
+  a recorded base commit. Never let concurrent workers edit the same checkout.
+  Supply the issue specification, worktree path, branch, and expected deliverable;
+  workers must verify their directory and branch before making changes.
+- The coordinating agent owns the canonical Beads database. During delegated
+  work, this overrides the general per-agent Beads steps above: workers receive
+  issue/context snapshots and report findings, progress, and validation to the
+  coordinator instead of running `bd`, including `bd prime` or read commands.
+  The coordinator serializes all `bd` operations, waits for each process to exit,
+  and handles claims, dependencies, notes, closure, and remote synchronization.
+  Do not create independent task databases in worker worktrees.
+- Workers stay within their slice, run its checks, and return commit/branch or PR
+  references, validation results, and known limitations. Send newly discovered
+  work or blockers to the coordinator rather than silently expanding scope.
+- The coordinator integrates overlapping changes one at a time into a task or
+  integration branch, preserving earlier slices' behavior and tests. Resolve
+  conflicts deliberately and run `pnpm check` after each integrated slice before
+  proceeding. Independent branch checks do not validate the combined result.
+  This does not authorize merging GitHub PRs or publishing packages.
+- Record review outcomes, integration status, validation, and PR links in Beads.
+  Keep implementation completion separate from integration/merge status; if
+  integration remains outstanding, track it explicitly rather than implying
+  that closing a slice means it has landed.
+
 ## Completion requirements
 
 - When adding or changing a rule, include valid cases, invalid cases, and tests
