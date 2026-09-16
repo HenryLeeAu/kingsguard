@@ -95,7 +95,12 @@ export function isReactRef(
   )
     return false;
   return variable.defs.some((def) => {
-    if (def.type !== 'Variable' || !def.node.init) return false;
+    if (
+      def.type !== 'Variable' ||
+      def.node.id.type !== T.Identifier ||
+      !def.node.init
+    )
+      return false;
     const init = unwrap(def.node.init);
     return (
       init.type === T.CallExpression && isReactFactory(source, init.callee)

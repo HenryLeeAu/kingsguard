@@ -44,6 +44,34 @@ export const noImperativeDomState = createRule({
     const source = context.sourceCode;
     const domRefs = new Set<NonNullable<ReturnType<typeof resolve>>>();
     const writes: TSESTree.MemberExpression[] = [];
+    function collectWrites(node: TSESTree.Node): void {
+      const target = unwrap(node);
+      switch (target.type) {
+        case T.MemberExpression:
+          writes.push(target);
+          break;
+        case T.ArrayPattern:
+          for (const element of target.elements) {
+            if (element) collectWrites(element);
+          }
+          break;
+        case T.ObjectPattern:
+          for (const property of target.properties) {
+            collectWrites(
+              property.type === T.RestElement
+                ? property.argument
+                : property.value,
+            );
+          }
+          break;
+        case T.AssignmentPattern:
+          collectWrites(target.left);
+          break;
+        case T.RestElement:
+          collectWrites(target.argument);
+          break;
+      }
+    }
     return {
       JSXAttribute(node) {
         if (
@@ -61,12 +89,10 @@ export const noImperativeDomState = createRule({
         if (variable) domRefs.add(variable);
       },
       AssignmentExpression(node) {
-        const target = unwrap(node.left);
-        if (target.type === T.MemberExpression) writes.push(target);
+        collectWrites(node.left);
       },
       UpdateExpression(node) {
-        const target = unwrap(node.argument);
-        if (target.type === T.MemberExpression) writes.push(target);
+        collectWrites(node.argument);
       },
       'Program:exit'() {
         for (const target of writes) {
