@@ -23,6 +23,10 @@ and [ESLint flat plugin configuration](https://eslint.org/docs/latest/extend/plu
   needed. axe-core requires rendered DOM and belongs outside static ESLint rules.
   Keep its browser/runtime dependencies out of Sentinel.
 
+The browser document-query guard uses lexical scope to distinguish unshadowed
+browser globals from local objects. It runs throughout enabled files without
+React ownership evidence; its diagnostic policy lives in its rule.
+
 ## Intentional limits
 
 The first rule is syntax- and scope-aware, not type- or data-flow-aware. It requires

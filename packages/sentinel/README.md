@@ -34,7 +34,7 @@ export default [...tseslint.configs.recommended, sentinel.configs.react];
 ```
 
 The flat React preset enables `@kingsguard/sentinel/react-no-imperative-dom-state`
-at warning severity. No type-aware linting or React runtime dependency is required.
+and `@kingsguard/sentinel/react-prefer-ref-over-dom-query` at warning severity. No type-aware linting or React runtime dependency is required.
 Legacy `.eslintrc` configuration is not supported.
 
 ## Initial rule
@@ -46,3 +46,16 @@ refs remain allowed.
 
 See the [full rule documentation](https://github.com/HenryLeeAu/kingsguard/blob/main/docs/rules/no-imperative-dom-state.md)
 for exact coverage, exceptions, and limitations. No automatic fix is offered.
+
+## Browser document queries
+
+`react-prefer-ref-over-dom-query` reports browser document `getElementById`,
+`querySelector`, and `querySelectorAll` accesses, including method retrieval and
+direct static destructuring. It applies throughout enabled files, including files
+without React imports or JSX. Local bindings shadowing browser globals remain
+allowed. Prefer React refs for element access; effects and SDK calls are not
+automatic exemptions.
+
+See [query rule coverage and limitations](https://github.com/HenryLeeAu/kingsguard/blob/main/docs/rules/prefer-ref-over-dom-query.md)
+for supported receivers, detection gaps, severity configuration, and explained
+ESLint suppressions. No autofix or custom rule options are provided.
