@@ -46,3 +46,14 @@ refs remain allowed.
 
 See the [full rule documentation](https://github.com/HenryLeeAu/kingsguard/blob/main/docs/rules/no-imperative-dom-state.md)
 for exact coverage, exceptions, and limitations. No automatic fix is offered.
+
+## Computed-style guard
+
+The React preset also enables
+`@kingsguard/sentinel/react-prefer-state-over-computed-style` at warning severity.
+It reports browser `getComputedStyle` reads, captured references, and direct static
+extraction in every file scope, including files without React imports or JSX.
+Prefer React state and props as the source of UI state. Local functions and objects
+that shadow browser globals are exempt. See the
+[computed-style rule documentation](../../docs/rules/prefer-state-over-computed-style.md)
+for detection boundaries, configuration, and explained ESLint suppression.
