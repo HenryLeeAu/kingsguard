@@ -40,9 +40,16 @@ The flat React preset enables all three rules at warning severity:
 - `@kingsguard/sentinel/react-prefer-state-over-computed-style`
 
 No type-aware linting or React runtime dependency is required.
-Legacy `.eslintrc` configuration is not supported.
+Legacy `.eslintrc` configuration is not supported. Use
+`sentinel.configs.react`, not `extends: ['plugin:@kingsguard/sentinel/react']`.
+The React preset belongs to this plugin; it does not require separate
+`@kingsguard/core` or `@kingsguard/axe` packages.
 
-## Initial rule
+Run `pnpm exec eslint .` to check your project. To fail CI on preset warnings, use
+`pnpm exec eslint . --max-warnings 0`, or override selected rules to `error` in
+a later flat-config entry.
+
+## DOM-ref operation guard
 
 For a React ref attached to a native JSX element, Sentinel allows only its
 built-in operations: direct focus, scrolling, selection, measurement and playback
@@ -74,5 +81,5 @@ It reports browser `getComputedStyle` reads, captured references, and direct sta
 extraction in every file scope, including files without React imports or JSX.
 Prefer React state and props as the source of UI state. Local functions and objects
 that shadow browser globals are exempt. See the
-[computed-style rule documentation](../../docs/rules/prefer-state-over-computed-style.md)
+[computed-style rule documentation](https://github.com/HenryLeeAu/kingsguard/blob/main/docs/rules/prefer-state-over-computed-style.md)
 for detection boundaries, configuration, and explained ESLint suppression.
