@@ -1,4 +1,6 @@
 import type { ESLint, Linter } from 'eslint';
+import { preferRefOverDomQuery } from './rules/prefer-ref-over-dom-query.js';
+import { preferStateOverComputedStyle } from './rules/prefer-state-over-computed-style.js';
 import { noImperativeDomState } from './rules/no-imperative-dom-state.js';
 
 const plugin = {
@@ -6,6 +8,14 @@ const plugin = {
   // typescript-eslint uses a narrower TS AST context than ESLint's generic
   // plugin API. Keep that type boundary here; integration tests exercise it.
   rules: {
+    'react-prefer-ref-over-dom-query':
+      preferRefOverDomQuery as unknown as NonNullable<
+        ESLint.Plugin['rules']
+      >[string],
+    'react-prefer-state-over-computed-style':
+      preferStateOverComputedStyle as unknown as NonNullable<
+        ESLint.Plugin['rules']
+      >[string],
     'react-no-imperative-dom-state':
       noImperativeDomState as unknown as NonNullable<
         ESLint.Plugin['rules']
@@ -19,7 +29,11 @@ plugin.configs.react = {
   files: ['**/*.{js,jsx,mjs,cjs,ts,tsx,mts,cts}'],
   languageOptions: { parserOptions: { ecmaFeatures: { jsx: true } } },
   plugins: { '@kingsguard/sentinel': plugin },
-  rules: { '@kingsguard/sentinel/react-no-imperative-dom-state': 'warn' },
+  rules: {
+    '@kingsguard/sentinel/react-no-imperative-dom-state': 'error',
+    '@kingsguard/sentinel/react-prefer-ref-over-dom-query': 'error',
+    '@kingsguard/sentinel/react-prefer-state-over-computed-style': 'error',
+  },
 };
 
 export default plugin;

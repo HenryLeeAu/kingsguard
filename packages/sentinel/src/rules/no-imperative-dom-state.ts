@@ -10,16 +10,36 @@ import {
   unwrap,
 } from '../adapters/react.js';
 
-const properties = new Set([
-  'tabIndex',
-  'className',
-  'hidden',
-  'disabled',
-  'checked',
-  'value',
-  'textContent',
-  'innerHTML',
+const callable = new Set([
+  'focus',
+  'blur',
+  'scroll',
+  'scrollTo',
+  'scrollBy',
+  'scrollIntoView',
+  'getBoundingClientRect',
+  'getClientRects',
+  'select',
+  'setSelectionRange',
+  'play',
+  'pause',
 ]);
+const readable = new Set([
+  'clientWidth',
+  'clientHeight',
+  'clientTop',
+  'clientLeft',
+  'offsetWidth',
+  'offsetHeight',
+  'offsetTop',
+  'offsetLeft',
+  'scrollWidth',
+  'scrollHeight',
+  'scrollTop',
+  'scrollLeft',
+]);
+const writable = new Set(['scrollTop', 'scrollLeft']);
+
 const createRule = ESLintUtils.RuleCreator(
   (name) =>
     `https://github.com/kingsguard-dev/kingsguard/blob/main/docs/rules/${name}.md`,
@@ -31,24 +51,56 @@ export const noImperativeDomState = createRule({
     type: 'suggestion',
     docs: {
       description:
-        'Prefer React props and state over direct mutation of DOM state through refs.',
+        'Keep UI state in React props and state; allow only built-in DOM-ref operations.',
     },
     schema: [],
     messages: {
       preferDeclarative:
-        'Avoid mutating "{{property}}" through a React DOM ref. Express this state through JSX props and React state instead.',
+        'This operation on "{{property}}" through a React DOM ref is not in the built-in allow list. Express UI state through JSX props and React state instead.',
     },
   },
   defaultOptions: [],
   create(context) {
     const source = context.sourceCode;
     const domRefs = new Set<NonNullable<ReturnType<typeof resolve>>>();
-    const writes: TSESTree.MemberExpression[] = [];
+    const writes = new Set<TSESTree.MemberExpression>();
+    const members: TSESTree.MemberExpression[] = [];
+    const extractions: {
+      pattern: TSESTree.ObjectPattern;
+      value: TSESTree.Node;
+    }[] = [];
+    function isDomNode(expression: TSESTree.Node): boolean {
+      const current = unwrap(expression);
+      if (
+        current.type !== T.MemberExpression ||
+        propertyName(current) !== 'current'
+      )
+        return false;
+      const id = unwrap(current.object);
+      if (id.type !== T.Identifier) return false;
+      const variable = resolve(source, id);
+      return !!variable && domRefs.has(variable);
+    }
+    function report(node: TSESTree.Node, property: string | undefined): void {
+      context.report({
+        node,
+        messageId: 'preferDeclarative',
+        data: { property: property ?? '[unknown]' },
+      });
+    }
+    function collectExtraction(
+      pattern: TSESTree.Node,
+      value: TSESTree.Node,
+    ): void {
+      const target = unwrap(pattern);
+      if (target.type === T.ObjectPattern)
+        extractions.push({ pattern: target, value });
+    }
     function collectWrites(node: TSESTree.Node): void {
       const target = unwrap(node);
       switch (target.type) {
         case T.MemberExpression:
-          writes.push(target);
+          writes.add(target);
           break;
         case T.ArrayPattern:
           for (const element of target.elements) {
@@ -88,31 +140,67 @@ export const noImperativeDomState = createRule({
         const variable = resolve(source, id);
         if (variable) domRefs.add(variable);
       },
+      MemberExpression(node) {
+        members.push(node);
+      },
+      VariableDeclarator(node) {
+        if (node.init) collectExtraction(node.id, node.init);
+      },
       AssignmentExpression(node) {
         collectWrites(node.left);
+        collectExtraction(node.left, node.right);
       },
       UpdateExpression(node) {
         collectWrites(node.argument);
       },
+      ForInStatement(node) {
+        collectWrites(node.left);
+      },
+      ForOfStatement(node) {
+        collectWrites(node.left);
+      },
       'Program:exit'() {
-        for (const target of writes) {
+        for (const target of members) {
+          if (!isDomNode(target.object)) continue;
           const property = propertyName(target);
-          if (!property || !properties.has(property)) continue;
-          const current = unwrap(target.object);
-          if (
-            current.type !== T.MemberExpression ||
-            propertyName(current) !== 'current'
-          )
-            continue;
-          const id = unwrap(current.object);
-          if (id.type !== T.Identifier) continue;
-          const variable = resolve(source, id);
-          if (variable && domRefs.has(variable))
-            context.report({
-              node: target,
-              messageId: 'preferDeclarative',
-              data: { property },
-            });
+          // Walk only transparent wrappers; trailing members are uses, not calls.
+          let expression: TSESTree.Node = target;
+          while (expression.parent && unwrap(expression.parent) === target) {
+            expression = expression.parent;
+          }
+          const parent = expression.parent;
+          const allowed =
+            property !== undefined &&
+            ((parent?.type === T.UnaryExpression &&
+              parent.operator === 'delete') ||
+            (parent?.type === T.TaggedTemplateExpression &&
+              parent.tag === expression)
+              ? false
+              : writes.has(target)
+                ? writable.has(property)
+                : (parent?.type === T.CallExpression ||
+                      parent?.type === T.NewExpression) &&
+                    parent.callee === expression
+                  ? parent.type === T.CallExpression && callable.has(property)
+                  : readable.has(property));
+          if (!allowed) report(target, property);
+        }
+        for (const { pattern, value } of extractions) {
+          if (!isDomNode(value)) continue;
+          for (const property of pattern.properties) {
+            if (property.type === T.RestElement) {
+              report(property, '[rest]');
+              continue;
+            }
+            const name =
+              !property.computed && property.key.type === T.Identifier
+                ? property.key.name
+                : property.key.type === T.Literal &&
+                    typeof property.key.value === 'string'
+                  ? property.key.value
+                  : undefined;
+            if (!name || !readable.has(name)) report(property, name);
+          }
         }
       },
     };

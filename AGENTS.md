@@ -31,6 +31,70 @@ starting with React.
   can be demonstrated.
 - Preserve existing user changes and avoid unrelated refactoring.
 
+## Parallel slice development
+
+- Before implementation, give each slice a specification with scope, exclusions,
+  acceptance tests, and real dependencies. Apply the independent review process
+  below to the specifications before dispatch. Specification review does not
+  approve a future design that is still a task.
+- Run independent, ready slices concurrently when useful. A design investigation
+  may run alongside unrelated implementation, but its dependent implementation
+  must wait for the design and any required review. Shared files alone are not a
+  task dependency.
+- Give each implementation worker a separate Git worktree and task branch from
+  a recorded base commit. Never let concurrent workers edit the same checkout.
+  Supply the issue specification, worktree path, branch, and expected deliverable;
+  workers must verify their directory and branch before making changes.
+- The coordinator supplies task and context snapshots to workers and collects
+  their findings, progress, and validation. Keep coordination records separate
+  from concurrent source edits.
+- Workers stay within their slice, run its checks, and return commit/branch or PR
+  references, validation results, and known limitations. Send newly discovered
+  work or blockers to the coordinator rather than silently expanding scope.
+- The coordinator integrates overlapping changes one at a time into a task or
+  integration branch, preserving earlier slices' behavior and tests. Resolve
+  conflicts deliberately and run `pnpm check` after each integrated slice before
+  proceeding. Independent branch checks do not validate the combined result.
+  This does not authorize merging GitHub PRs or publishing packages.
+- Record review outcomes, integration status, validation, and PR links with the task.
+  Keep implementation completion separate from integration/merge status; if
+  integration remains outstanding, track it explicitly rather than implying
+  that closing a slice means it has landed.
+
+## Independent slice review
+
+- Each slice requires two independent reviewers at the specification gate and
+  again for the completed implementation (or design deliverable). Use fresh
+  contexts, separate from the implementer, with the same specification snapshot,
+  repository base, and candidate commit or frozen diff. Reviewers inspect the
+  relevant source, tests, documented escape hatches, and acceptance criteria.
+- Collect both initial reports before sharing either reviewer's conclusions with
+  the other. Reviews must identify evidence, severity, and a ready/blocked verdict;
+  passing tests alone are not proof that the specification is satisfied.
+- Reviewers are read-only: do not edit files or commit. Run checks
+  only in an isolated review checkout when they produce files. The coordinator
+  supplies snapshots and records reviewer identities, reviewed versions, reports,
+  decisions, and validation with the task.
+- If the reports disagree on correctness, scope, severity, or readiness, assign a
+  third, fresh-context reviewer who did not implement or perform either review.
+  Give this neutral reviewer the same reviewed artifacts, the disputed claims,
+  and both reports. Resolve the dispute using specification evidence and focused
+  tests, not majority voting. Agreeing findings do not require a third reviewer.
+- If the dispute exposes unclear product intent or an unspecified escape hatch,
+  ask the user to decide that specific behavior. Keep affected work blocked while
+  continuing independent work. Record the decision and update the specification
+  and acceptance tests before resuming; reviewers must not invent product policy.
+- After fixes, recheck the findings against the updated version and run relevant
+  checks. Both original reviewers assess the changed scope and update their
+  verdicts; use a neutral reviewer for remaining disagreements. Changed behavior
+  or scope invalidates approval for that portion, not unrelated verified work.
+- Release a review gate only when both reviewers agree there are no unresolved
+  blocking findings, or the neutral review resolves the disagreement with recorded
+  evidence. Required product decisions and validation must also be complete. Do
+  not treat missing reviews as approvals or close a slice with unresolved blockers.
+  Prior single-review results remain evidence but do not satisfy this two-reviewer
+  policy on their own. Review approval does not authorize merging a PR.
+
 ## Completion requirements
 
 - When adding or changing a rule, include valid cases, invalid cases, and tests
