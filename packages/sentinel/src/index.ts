@@ -1,5 +1,6 @@
 import type { ESLint, Linter } from 'eslint';
 import { preferRefOverDomQuery } from './rules/prefer-ref-over-dom-query.js';
+import { preferStateOverComputedStyle } from './rules/prefer-state-over-computed-style.js';
 import { noImperativeDomState } from './rules/no-imperative-dom-state.js';
 
 const plugin = {
@@ -9,6 +10,10 @@ const plugin = {
   rules: {
     'react-prefer-ref-over-dom-query':
       preferRefOverDomQuery as unknown as NonNullable<
+        ESLint.Plugin['rules']
+      >[string],
+    'react-prefer-state-over-computed-style':
+      preferStateOverComputedStyle as unknown as NonNullable<
         ESLint.Plugin['rules']
       >[string],
     'react-no-imperative-dom-state':
@@ -27,6 +32,7 @@ plugin.configs.react = {
   rules: {
     '@kingsguard/sentinel/react-no-imperative-dom-state': 'warn',
     '@kingsguard/sentinel/react-prefer-ref-over-dom-query': 'warn',
+    '@kingsguard/sentinel/react-prefer-state-over-computed-style': 'warn',
   },
 };
 

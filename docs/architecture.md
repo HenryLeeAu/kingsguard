@@ -40,3 +40,8 @@ detection gaps; effects and third-party calls are not automatic exemptions.
 
 Release automation, dual CommonJS output, a CLI, and placeholder framework packages
 are deliberately deferred until there is a concrete consumer.
+
+The computed-style guard is a separate global-browser rule: it resolves lexical
+bindings for browser APIs without requiring React ref or JSX ownership. Its
+read/reference diagnostics live in the rule; it shares the existing static member
+and expression-wrapper helpers. It does not infer intent from effects or SDK calls.
