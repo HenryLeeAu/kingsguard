@@ -42,7 +42,7 @@ const writable = new Set(['scrollTop', 'scrollLeft']);
 
 const createRule = ESLintUtils.RuleCreator(
   (name) =>
-    `https://github.com/HenryLeeAu/kingsguard/blob/main/docs/rules/${name}.md`,
+    `https://github.com/kingsguard-dev/kingsguard/blob/main/docs/rules/${name}.md`,
 );
 
 export const noImperativeDomState = createRule({

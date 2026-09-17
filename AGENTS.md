@@ -1,7 +1,7 @@
 # Kingsguard project instructions
 
 You are working on Kingsguard:
-<https://github.com/HenryLeeAu/kingsguard>
+<https://github.com/kingsguard-dev/kingsguard>
 
 Kingsguard is an ecosystem of framework-aware UI tools. Its first product,
 Sentinel, is an ESLint plugin that helps developers keep UI state declarative,
