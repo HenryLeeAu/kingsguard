@@ -31,27 +31,9 @@ starting with React.
   can be demonstrated.
 - Preserve existing user changes and avoid unrelated refactoring.
 
-## Task tracking with Beads
-
-- Use `bd` (Beads) for development tasks and dependencies. Do not maintain a
-  separate markdown TODO list.
-- Run `bd prime` at the start of a session and after context compaction. On a fresh
-  clone, run `bd bootstrap` first to restore the database from the configured remote.
-- Run `bd dolt pull`, then `bd ready` to find work and `bd show <id>` to read its
-  scope. Create an issue with a description and acceptance criteria for new work.
-- Claim a task with `bd update <id> --claim` before implementation. Add real
-  prerequisites with `bd dep add <issue> <depends-on>`; do not invent dependencies
-  between independent tasks.
-- Follow the completion requirements below. Record validation and the PR URL in
-  the issue, close completed implementation tasks with `bd close <id>`, then run
-  `bd dolt push` to persist task updates. Closing a task does not authorize merging
-  its PR.
-- Git push and `bd dolt push` are separate: push both code and task updates.
-  Keep local databases out of Git. See `.beads/README.md` for setup and storage.
-
 ## Parallel slice development
 
-- Before implementation, give each slice a Beads issue with scope, exclusions,
+- Before implementation, give each slice a specification with scope, exclusions,
   acceptance tests, and real dependencies. Apply the independent review process
   below to the specifications before dispatch. Specification review does not
   approve a future design that is still a task.
@@ -63,13 +45,9 @@ starting with React.
   a recorded base commit. Never let concurrent workers edit the same checkout.
   Supply the issue specification, worktree path, branch, and expected deliverable;
   workers must verify their directory and branch before making changes.
-- The coordinating agent owns the canonical Beads database. During delegated
-  work, this overrides the general per-agent Beads steps above: workers receive
-  issue/context snapshots and report findings, progress, and validation to the
-  coordinator instead of running `bd`, including `bd prime` or read commands.
-  The coordinator serializes all `bd` operations, waits for each process to exit,
-  and handles claims, dependencies, notes, closure, and remote synchronization.
-  Do not create independent task databases in worker worktrees.
+- The coordinator supplies task and context snapshots to workers and collects
+  their findings, progress, and validation. Keep coordination records separate
+  from concurrent source edits.
 - Workers stay within their slice, run its checks, and return commit/branch or PR
   references, validation results, and known limitations. Send newly discovered
   work or blockers to the coordinator rather than silently expanding scope.
@@ -78,7 +56,7 @@ starting with React.
   conflicts deliberately and run `pnpm check` after each integrated slice before
   proceeding. Independent branch checks do not validate the combined result.
   This does not authorize merging GitHub PRs or publishing packages.
-- Record review outcomes, integration status, validation, and PR links in Beads.
+- Record review outcomes, integration status, validation, and PR links with the task.
   Keep implementation completion separate from integration/merge status; if
   integration remains outstanding, track it explicitly rather than implying
   that closing a slice means it has landed.
@@ -93,10 +71,10 @@ starting with React.
 - Collect both initial reports before sharing either reviewer's conclusions with
   the other. Reviews must identify evidence, severity, and a ready/blocked verdict;
   passing tests alone are not proof that the specification is satisfied.
-- Reviewers are read-only: do not edit files, commit, or operate Beads. Run checks
+- Reviewers are read-only: do not edit files or commit. Run checks
   only in an isolated review checkout when they produce files. The coordinator
   supplies snapshots and records reviewer identities, reviewed versions, reports,
-  decisions, and validation in Beads.
+  decisions, and validation with the task.
 - If the reports disagree on correctness, scope, severity, or readiness, assign a
   third, fresh-context reviewer who did not implement or perform either review.
   Give this neutral reviewer the same reviewed artifacts, the disputed claims,

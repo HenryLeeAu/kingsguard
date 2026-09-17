@@ -43,12 +43,6 @@ See the [architecture notes](docs/architecture.md) before extending the project.
 
 ## Contributing
 
-We track development work with [Beads](https://github.com/gastownhall/beads)
-(`bd`). On macOS, install it with `brew install beads`, then run `bd bootstrap`
-and `bd ready` from this repository. See the [Beads workflow](.beads/README.md)
-for claiming tasks and syncing their state. Beads is development tooling; it is
-not required to install or use Sentinel.
-
 Add a rule with valid and invalid cases, document its limits, and run `pnpm check`.
 Prefer evidence of framework ownership over broad API blacklists. Keep framework
 recognition in adapters and avoid introducing shared packages until there are
