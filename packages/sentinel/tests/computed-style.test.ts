@@ -140,7 +140,7 @@ it.each([1, 2] as const)(
       overrideConfigFile: true,
       overrideConfig: [
         plugin.configs.react,
-        ...(severity === 2 ? [{ rules: { [ruleId]: 'error' as const } }] : []),
+        ...(severity === 1 ? [{ rules: { [ruleId]: 'warn' as const } }] : []),
       ],
     });
     const [result] = await eslint.lintText(
@@ -164,7 +164,7 @@ it('honors standard explained ESLint suppression', async () => {
     { filePath: 'example.js' },
   );
   expect(result?.messages).toEqual([
-    expect.objectContaining({ ruleId, severity: 1 }),
+    expect.objectContaining({ ruleId, severity: 2 }),
   ]);
   expect(result?.suppressedMessages).toEqual([
     expect.objectContaining({
@@ -209,7 +209,7 @@ it.each(['JavaScript', 'TypeScript'] as const)(
     );
     expect(result?.messages).toEqual(
       [5, 6, 7, 8].map((line) =>
-        expect.objectContaining({ ruleId, severity: 1, line }),
+        expect.objectContaining({ ruleId, severity: 2, line }),
       ),
     );
   },

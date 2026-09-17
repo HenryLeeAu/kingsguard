@@ -33,7 +33,7 @@ import sentinel from '@kingsguard/eslint-plugin-sentinel';
 export default [...tseslint.configs.recommended, sentinel.configs.react];
 ```
 
-The flat React preset enables all three rules at warning severity:
+The flat React preset enables all three rules at error severity:
 
 - `@kingsguard/sentinel/react-no-imperative-dom-state`
 - `@kingsguard/sentinel/react-prefer-ref-over-dom-query`
@@ -45,9 +45,24 @@ Legacy `.eslintrc` configuration is not supported. Use
 The React preset belongs to this plugin; it does not require separate
 `@kingsguard/core` or `@kingsguard/axe` packages.
 
-Run `pnpm exec eslint .` to check your project. To fail CI on preset warnings, use
-`pnpm exec eslint . --max-warnings 0`, or override selected rules to `error` in
-a later flat-config entry.
+Run `pnpm exec eslint .` to check your project. Violations fail lint and CI by
+default. For gradual adoption, override selected rules to `warn` in a later
+flat-config entry, or use `off` to disable a rule:
+
+```js
+import sentinel from '@kingsguard/eslint-plugin-sentinel';
+
+export default [
+  sentinel.configs.react,
+  {
+    rules: {
+      '@kingsguard/sentinel/react-no-imperative-dom-state': 'warn',
+      '@kingsguard/sentinel/react-prefer-ref-over-dom-query': 'warn',
+      '@kingsguard/sentinel/react-prefer-state-over-computed-style': 'warn',
+    },
+  },
+];
+```
 
 ## DOM-ref operation guard
 
@@ -76,7 +91,7 @@ ESLint suppressions. No autofix or custom rule options are provided.
 ## Computed-style guard
 
 The React preset also enables
-`@kingsguard/sentinel/react-prefer-state-over-computed-style` at warning severity.
+`@kingsguard/sentinel/react-prefer-state-over-computed-style` at error severity.
 It reports browser `getComputedStyle` reads, captured references, and direct static
 extraction in every file scope, including files without React imports or JSX.
 Prefer React state and props as the source of UI state. Local functions and objects

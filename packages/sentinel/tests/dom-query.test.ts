@@ -116,7 +116,7 @@ it.each([1, 2] as const)(
       overrideConfigFile: true,
       overrideConfig: [
         plugin.configs.react,
-        ...(severity === 2 ? [{ rules: { [ruleId]: 'error' as const } }] : []),
+        ...(severity === 1 ? [{ rules: { [ruleId]: 'warn' as const } }] : []),
       ],
     });
     const [result] = await eslint.lintText(

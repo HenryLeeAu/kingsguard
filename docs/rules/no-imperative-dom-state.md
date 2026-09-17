@@ -125,5 +125,5 @@ list, and no normal/strict modes. User extension mechanisms are deferred.
 There is no automatic fix: moving imperative code into JSX/state can change
 behavior and requires an intentional component change.
 
-There are no options. The React preset enables this rule as a warning; projects
-can raise its severity to `error` in their flat config.
+There are no options. The React preset enables this rule as an error. Projects
+can downgrade it to `warn` or disable it with `off` in a later flat-config entry.

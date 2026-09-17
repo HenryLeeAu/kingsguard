@@ -15,7 +15,7 @@ it('works with the default JavaScript parser and preserves imperative focus', as
   expect(result?.messages).toEqual([
     expect.objectContaining({
       ruleId: '@kingsguard/sentinel/react-no-imperative-dom-state',
-      severity: 1,
+      severity: 2,
     }),
   ]);
 });
@@ -32,7 +32,7 @@ it('loads the React flat preset and reports through ESLint', async () => {
   expect(result?.messages).toEqual([
     expect.objectContaining({
       ruleId: '@kingsguard/sentinel/react-no-imperative-dom-state',
-      severity: 1,
+      severity: 2,
     }),
   ]);
 });

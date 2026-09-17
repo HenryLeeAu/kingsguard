@@ -1,7 +1,7 @@
 # react-prefer-ref-over-dom-query
 
 Prefer React refs to browser document queries for DOM access. The React preset
-warns on `getElementById`, `querySelector`, and `querySelectorAll` accesses through
+reports on `getElementById`, `querySelector`, and `querySelectorAll` accesses through
 unshadowed `document`, `window.document`, and `globalThis.document`.
 
 ```tsx
@@ -46,16 +46,16 @@ global query guard, not an allowlist of global object operations.
 ## Configuration and exceptions
 
 The rule takes no options and has no automatic fix. Replacing a query safely
-requires choosing the appropriate ref and lifecycle in application code. A
-consumer can promote the preset warning to an error using ordinary ESLint
-configuration:
+requires choosing the appropriate ref and lifecycle in application code. The
+React preset reports violations as errors. For gradual adoption, downgrade the
+rule to `warn` in a later config entry, or use `off` to disable it:
 
 ```js
 export default [
   sentinel.configs.react,
   {
     rules: {
-      '@kingsguard/sentinel/react-prefer-ref-over-dom-query': 'error',
+      '@kingsguard/sentinel/react-prefer-ref-over-dom-query': 'warn',
     },
   },
 ];

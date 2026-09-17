@@ -51,13 +51,13 @@ Compound assignments and updates read their target and are reported. Bare
 
 ## Configuration and exceptions
 
-The React flat preset enables this rule at warning severity. Ordinary ESLint
-configuration can make it an error:
+The React flat preset enables this rule at error severity. For gradual adoption,
+add a later config entry to downgrade it to `warn`, or use `off` to disable it:
 
 ```js
 {
   rules: {
-    '@kingsguard/sentinel/react-prefer-state-over-computed-style': 'error',
+    '@kingsguard/sentinel/react-prefer-state-over-computed-style': 'warn',
   },
 }
 ```

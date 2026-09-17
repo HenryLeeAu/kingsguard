@@ -30,9 +30,9 @@ plugin.configs.react = {
   languageOptions: { parserOptions: { ecmaFeatures: { jsx: true } } },
   plugins: { '@kingsguard/sentinel': plugin },
   rules: {
-    '@kingsguard/sentinel/react-no-imperative-dom-state': 'warn',
-    '@kingsguard/sentinel/react-prefer-ref-over-dom-query': 'warn',
-    '@kingsguard/sentinel/react-prefer-state-over-computed-style': 'warn',
+    '@kingsguard/sentinel/react-no-imperative-dom-state': 'error',
+    '@kingsguard/sentinel/react-prefer-ref-over-dom-query': 'error',
+    '@kingsguard/sentinel/react-prefer-state-over-computed-style': 'error',
   },
 };
 

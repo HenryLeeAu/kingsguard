@@ -37,8 +37,8 @@ it.each(cases)(
       overrideConfig: [plugin.configs.react, { languageOptions }],
     });
     const [result] = await eslint.lintText(mixed, { filePath });
-    expect(result?.errorCount).toBe(0);
-    expect(result?.warningCount).toBe(9);
+    expect(result?.errorCount).toBe(9);
+    expect(result?.warningCount).toBe(0);
     expect(
       result?.messages.map(({ ruleId, line, severity }) => ({
         ruleId,
@@ -49,16 +49,16 @@ it.each(cases)(
       ...[4, 5, 6, 7, 8, 9, 10].map((line) => ({
         ruleId: dom,
         line,
-        severity: 1,
+        severity: 2,
       })),
-      { ruleId: query, line: 11, severity: 1 },
-      { ruleId: style, line: 12, severity: 1 },
+      { ruleId: query, line: 11, severity: 2 },
+      { ruleId: style, line: 12, severity: 2 },
     ]);
   },
 );
 
 it.each(cases)(
-  'overrides all preset warnings to errors in $filePath',
+  'downgrades all preset errors to warnings in $filePath',
   async ({ filePath, languageOptions }) => {
     const eslint = new ESLint({
       overrideConfigFile: true,
@@ -66,13 +66,13 @@ it.each(cases)(
         plugin.configs.react,
         {
           languageOptions,
-          rules: { [dom]: 'error', [query]: 'error', [style]: 'error' },
+          rules: { [dom]: 'warn', [query]: 'warn', [style]: 'warn' },
         },
       ],
     });
     const [result] = await eslint.lintText(mixed, { filePath });
-    expect(result?.errorCount).toBe(9);
-    expect(result?.warningCount).toBe(0);
+    expect(result?.errorCount).toBe(0);
+    expect(result?.warningCount).toBe(9);
     expect(result?.messages.map(({ ruleId }) => ruleId)).toEqual([
       ...Array<string>(7).fill(dom),
       query,
@@ -125,5 +125,25 @@ function Example() {
         ],
       })),
     );
+  },
+);
+
+it.each(cases)(
+  'disables all guards with off in $filePath',
+  async ({ filePath, languageOptions }) => {
+    const eslint = new ESLint({
+      overrideConfigFile: true,
+      overrideConfig: [
+        plugin.configs.react,
+        {
+          languageOptions,
+          rules: { [dom]: 'off', [query]: 'off', [style]: 'off' },
+        },
+      ],
+    });
+    const [result] = await eslint.lintText(mixed, { filePath });
+    expect(result?.messages).toEqual([]);
+    expect(result?.errorCount).toBe(0);
+    expect(result?.warningCount).toBe(0);
   },
 );
