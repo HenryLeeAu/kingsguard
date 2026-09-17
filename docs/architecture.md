@@ -28,7 +28,11 @@ and [ESLint flat plugin configuration](https://eslint.org/docs/latest/extend/plu
 The first rule is syntax- and scope-aware, not type- or data-flow-aware. It requires
 a direct React ref factory and an intrinsic JSX ref binding in the same file.
 It does not prove every runtime value is a DOM element. Conservative coverage and
-explicit documentation are preferable to claiming universal DOM mutation detection.
+explicit documentation are preferable to claiming universal DOM operation detection.
+Within recognized refs, the rule applies one built-in operation allow list: direct
+calls, reads, and writes have distinct permissions. Unknown members are denied.
+Node aliases, reflection on bare nodes, and interprocedural behavior remain
+detection gaps; effects and third-party calls are not automatic exemptions.
 
 Release automation, dual CommonJS output, a CLI, and placeholder framework packages
 are deliberately deferred until there is a concrete consumer.

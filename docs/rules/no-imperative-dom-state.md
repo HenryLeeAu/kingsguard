@@ -1,6 +1,7 @@
 # react-no-imperative-dom-state
 
-Prefer React props and state over direct changes to DOM state managed by React.
+Keep UI state in React props and state. Recognized DOM refs use one built-in
+operation allow list; all other direct DOM-member operations report.
 This is a declarative UI rule, not a complete accessibility audit.
 
 ## Reported
@@ -49,39 +50,80 @@ The declaration must bind the ref object directly, such as
 `const { current: banana } = useRef(callback)` is not recognized as a ref object:
 here `banana` is the stored callback, and its own properties are not DOM evidence.
 
-It reports assignments (including compound assignments) and increments/decrements
-to `ref.current` properties: `tabIndex`, `className`, `hidden`, `disabled`, `checked`,
-`value`, `textContent`, and `innerHTML`. String-literal bracket access and TypeScript
-assertions/non-null expressions are supported.
+## Built-in operations
 
-Assignment targets inside array and object destructuring are also checked,
-including nested patterns, defaults, and rest targets:
+Only these exact operation/member pairs are allowed:
+
+| Operation             | Members                                                                                                                                                                      |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Direct method call    | `focus`, `blur`, `scroll`, `scrollTo`, `scrollBy`, `scrollIntoView`, `getBoundingClientRect`, `getClientRects`, `select`, `setSelectionRange`, `play`, `pause`               |
+| Property read         | `clientWidth`, `clientHeight`, `clientTop`, `clientLeft`, `offsetWidth`, `offsetHeight`, `offsetTop`, `offsetLeft`, `scrollWidth`, `scrollHeight`, `scrollTop`, `scrollLeft` |
+| Property write/update | `scrollTop`, `scrollLeft`                                                                                                                                                    |
+
+This is project policy, not a claim that every excluded platform API is a bug.
+The list does not validate element types, arguments, return values, or whether a
+call will succeed. Media playback is imperative; unlisted media properties such
+as `currentTime` and `volume` still report. Unknown names and dynamic member keys
+report, even when a key could evaluate to an allowed name.
+
+Call permission requires a direct call, including optional calls. Extracting a
+method, replacing it, invoking it with `new`, or using `.call`, `.apply`, or
+`.bind` reports. A readable property cannot be called. TypeScript assertions,
+non-null expressions, chain wrappers, and string-literal keys are supported.
+
+Writes include direct, compound and logical assignments, updates, destructuring
+assignment targets, and `for...in`/`for...of` member targets. Deleting any member
+reports, including writable scroll properties. UI-state reads also report:
+`ref.current.value` is not a source of declarative state.
+
+The first member directly on `ref.current` is checked once. Thus
+`ref.current.style.color`, `ref.current.classList.add(...)`, and
+`ref.current.dataset.key` report at `style`, `classList`, and `dataset`.
+Results of allowed geometry calls can be used normally:
+`ref.current.getBoundingClientRect().width` is allowed.
+
+Direct object destructuring in declarations and assignments checks each top-level
+property as a read. Nested patterns report once at their top-level key; dynamic
+keys and each rest element report. Independent operations in defaults and
+computed keys are checked too:
 
 ```js
-[ref.current.value] = values;
-({ checked: ref.current.checked = false } = data);
+const { clientWidth } = ref.current; // allowed
+const {
+  style: { color },
+} = ref.current; // one report: style
+const { focus, ...rest } = ref.current; // two reports
+({ hidden: value } = ref.current); // one report: hidden
+const { clientWidth = ref.current.value } = ref.current; // one report: value
 ```
 
-Reads in computed keys or default values are not mutations. For example,
-`[value = ref.current.value] = values` is allowed.
+Bare `ref.current` null guards, ref lifecycle assignments, and passing the node to
+an SDK are outside DOM-member checking. An effect, helper, or SDK call does not
+exempt a direct DOM-member operation from the allow list.
 
-Use JSX props for attributes, children for text, and controlled state where
-appropriate. Imperative focus (`ref.current.focus()`), scrolling, measurements,
-reads, ref initialization, and ordinary data refs are allowed.
+## Detection limits and overrides
 
-## Limits and exceptions
-
-- No cross-file tracking, ref aliases, callback refs, forwarded refs, or custom
-  hooks. Refs attached only to custom components do not establish DOM ownership.
-- No detection of `setAttribute`, `classList`, nested `style` mutations,
-  `Object.assign`, `delete`, destructured DOM aliases, or dynamic property keys.
-- Assignment targets in `for...in` and `for...of` loop headers are not checked.
+- No cross-file tracking, ref aliases, node aliases (`const node = ref.current`),
+  callback refs, forwarded refs, custom hooks, or DOM parameters. Refs attached
+  only to custom components do not establish DOM ownership.
+- Interprocedural SDK behavior and reflection through `Object`/`Reflect` APIs on
+  bare nodes are not tracked.
+- Dynamic access before node recognition (`ref[key]`), array destructuring or
+  spread of bare nodes, `in` membership tests, and loop-binding object patterns
+  are not tracked. These gaps are detection limits, not approved usage patterns.
 - A ref with no matching JSX binding is skipped, even with a DOM type annotation.
-- The same binding attached to a native element supplies evidence, not a proof
-  about its runtime value. Third-party widgets and deliberately uncontrolled
-  inputs may need a targeted ESLint suppression with an explanatory comment.
-- No automatic fix: moving imperative code into JSX/state can change behavior
-  and requires an intentional component change.
+  A native JSX binding supplies evidence, not proof of its runtime value.
+- An explicit ESLint suppression with a reason is the site-level override:
+
+```js
+// eslint-disable-next-line @kingsguard/sentinel/react-no-imperative-dom-state -- Required by this widget's integration contract.
+ref.current.dataset.widgetMode = mode;
+```
+
+There are no automatic effects or third-party exemptions, no configurable allow
+list, and no normal/strict modes. User extension mechanisms are deferred.
+There is no automatic fix: moving imperative code into JSX/state can change
+behavior and requires an intentional component change.
 
 There are no options. The React preset enables this rule as a warning; projects
 can raise its severity to `error` in their flat config.

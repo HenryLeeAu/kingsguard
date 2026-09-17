@@ -24,12 +24,9 @@ function Example() {
 tester.run('react-no-imperative-dom-state', noImperativeDomState, {
   valid: [
     example('ref.current.focus();'),
-    example('const index = ref.current.tabIndex; void index;'),
     example('ref.current = null;'),
     example('ref.current.scrollTop = 0;'),
     example('[ref.current.scrollTop] = values;'),
-    example('({ [ref.current.value]: value } = data);'),
-    example('[value = ref.current.value] = data;'),
     example('function update(ref) { [ref.current.value] = data; }'),
     example('[ref.current.value] = data;', '', '({ current: {} })'),
     `import { useRef } from 'react'; function Example() {
@@ -55,6 +52,15 @@ tester.run('react-no-imperative-dom-state', noImperativeDomState, {
     "import { useRef } from 'react'; function Example() { const ref = useRef(null); return <button ref={ref} tabIndex={-1}/>; }",
   ],
   invalid: [
+    ...[
+      'const index = ref.current.tabIndex; void index;',
+      '({ [ref.current.value]: value } = data);',
+      '[value = ref.current.value] = data;',
+    ].map((body) => ({
+      code: example(body),
+      errors: [{ messageId: 'preferDeclarative' as const }],
+      output: null,
+    })),
     {
       code: example('[ref.current.value, ref.current.checked] = values;'),
       errors: [
@@ -122,5 +128,178 @@ tester.run('react-no-imperative-dom-state', noImperativeDomState, {
       ],
       output: null,
     })),
+  ],
+});
+
+const methods = [
+  'focus',
+  'blur',
+  'scroll',
+  'scrollTo',
+  'scrollBy',
+  'scrollIntoView',
+  'getBoundingClientRect',
+  'getClientRects',
+  'select',
+  'setSelectionRange',
+  'play',
+  'pause',
+];
+const reads = [
+  'clientWidth',
+  'clientHeight',
+  'clientTop',
+  'clientLeft',
+  'offsetWidth',
+  'offsetHeight',
+  'offsetTop',
+  'offsetLeft',
+  'scrollWidth',
+  'scrollHeight',
+  'scrollTop',
+  'scrollLeft',
+];
+const writes = ['scrollTop', 'scrollLeft'];
+const writeForms = (name: string) => [
+  `ref.current.${name} = value;`,
+  `ref.current.${name} += 1;`,
+  `ref.current.${name} ||= 1;`,
+  `ref.current.${name} &&= 1;`,
+  `ref.current.${name} ??= 1;`,
+  `ref.current.${name}++;`,
+  `--ref.current.${name};`,
+  `[ref.current.${name} = 0] = data;`,
+  `({...ref.current.${name}} = data);`,
+  `({x: ref.current.${name}} = data);`,
+  `for(ref.current.${name} of values){}`,
+  `for(ref.current.${name} in values){}`,
+];
+const denied = (body: string, count = 1) => ({
+  code: example(body),
+  filename: 'example.tsx',
+  errors: Array.from({ length: count }, () => ({
+    messageId: 'preferDeclarative' as const,
+  })),
+  output: null,
+});
+tester.run('built-in DOM-ref operation allowlist', noImperativeDomState, {
+  valid: [
+    ...methods.flatMap((name) =>
+      [
+        `ref.current.${name}();`,
+        `ref.current?.${name}?.(...args);`,
+        `(ref.current!['${name}'] as Function)();`,
+        `((ref.current.${name} as Function)!)();`,
+      ].map((body) => ({ code: example(body), filename: 'example.tsx' })),
+    ),
+    ...reads.flatMap((name) =>
+      [
+        `const value = ref.current.${name};`,
+        `const {'${name}': value} = ref.current;`,
+        `({${name}: value = 0} = ref.current);`,
+      ].map((body) => example(body)),
+    ),
+    ...writes.flatMap((name) => writeForms(name).map((body) => example(body))),
+    example('if(ref.current) sdk.mount(ref.current);'),
+    example('const width = ref.current.getBoundingClientRect().width;'),
+    example('const {clientWidth = ref.current.clientHeight} = ref.current;'),
+    // Named detection limits, not approved escape hatches.
+    {
+      name: 'node alias is not tracked',
+      code: example('const node=ref.current; node.style.color=value;'),
+    },
+    {
+      name: 'ref alias is not tracked',
+      code: example('const alias=ref; alias.current.hidden=true;'),
+    },
+    {
+      name: 'reflection on bare node is not tracked',
+      code: example(
+        "Reflect.set(ref.current, 'hidden', true); Object.assign(ref.current, value);",
+      ),
+    },
+    {
+      name: 'dynamic current receiver is not tracked',
+      code: example('ref[key].hidden=true;'),
+    },
+    {
+      name: 'bare-node spread, array patterns and membership are not tracked',
+      code: example(
+        "const copy={...ref.current}; const [item]=ref.current; const yes='hidden' in ref.current;",
+      ),
+    },
+    {
+      name: 'loop binding object patterns are not tracked',
+      code: example('for(const {hidden} of [ref.current]) {}'),
+    },
+  ],
+  invalid: [
+    ...methods.flatMap((name) =>
+      [
+        `const value=ref.current.${name};`,
+        `const {${name}}=ref.current;`,
+        `ref.current.${name}.call(ref.current);`,
+        `ref.current.${name}.apply(ref.current, args);`,
+        `ref.current.${name}.bind(ref.current);`,
+        `new ref.current.${name}();`,
+        `ref.current.${name}\`text\`;`,
+        `delete ref.current.${name};`,
+        ...writeForms(name),
+      ].map((body) => denied(body)),
+    ),
+    ...reads.flatMap((name) =>
+      [
+        `ref.current.${name}();`,
+        `new ref.current.${name}();`,
+        `ref.current.${name}\`text\`;`,
+        `delete ref.current.${name};`,
+        ...(writes.includes(name) ? [] : writeForms(name)),
+      ].map((body) => denied(body)),
+    ),
+    ...[
+      'tabIndex',
+      'className',
+      'hidden',
+      'disabled',
+      'checked',
+      'value',
+      'textContent',
+      'innerHTML',
+      'style',
+      'classList',
+      'dataset',
+      'currentTime',
+      'volume',
+      'unknown',
+    ].flatMap((name) =>
+      [
+        `const value=ref.current.${name};`,
+        `ref.current.${name}=value;`,
+        `ref.current.${name}();`,
+        `const {${name}}=ref.current;`,
+      ].map((body) => denied(body)),
+    ),
+    ...[
+      'ref.current[key]();',
+      'ref.current[`focus`]();',
+      'ref.current[key]=value;',
+      'ref.current.style.color=value;',
+      'ref.current.classList.add(token);',
+      'ref.current.dataset.key=value;',
+      'delete ref.current?.scrollTop;',
+      'const {[key]: value}=ref.current;',
+      'const {style:{color}}=ref.current;',
+      'const {clientWidth,...rest}=ref.current;',
+      '({hidden:value}=ref.current);',
+      'useEffect(()=>{ref.current.hidden=true;});',
+      'sdk.mount(ref.current.style);',
+      '(ref.current.style as CSSStyleDeclaration).color=value;',
+      '((ref.current.clientWidth as number)!)++;',
+    ].map((body) => denied(body)),
+    denied('const {style, focus, hidden, ...rest}=ref.current;', 4),
+    denied('const {hidden=ref.current.value}=ref.current;', 2),
+    denied('const {[ref.current.hidden]:value}=ref.current;', 2),
+    denied('({hidden:ref.current.value}=ref.current);', 2),
+    denied('const {clientWidth=ref.current.hidden}=ref.current;'),
   ],
 });

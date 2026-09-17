@@ -39,10 +39,11 @@ Legacy `.eslintrc` configuration is not supported.
 
 ## Initial rule
 
-For a React ref attached to a native JSX element, Sentinel reports selected state
-assignments such as `ref.current.tabIndex = -1`. Prefer `tabIndex={-1}` or a JSX
-prop derived from React state. Focus, measurements, scrolling, and ordinary data
-refs remain allowed.
+For a React ref attached to a native JSX element, Sentinel allows only its
+built-in operations: direct focus, scrolling, selection, measurement and playback
+calls; scalar geometry/scroll reads; and scroll-position writes. Other direct
+member reads, calls, and writes report. Prefer JSX props derived from React
+state. Ordinary data refs remain outside this DOM-ref rule.
 
 See the [full rule documentation](https://github.com/HenryLeeAu/kingsguard/blob/main/docs/rules/no-imperative-dom-state.md)
 for exact coverage, exceptions, and limitations. No automatic fix is offered.
