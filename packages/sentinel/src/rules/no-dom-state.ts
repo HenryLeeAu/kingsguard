@@ -45,8 +45,8 @@ const createRule = ESLintUtils.RuleCreator(
     `https://github.com/kingsguard-dev/kingsguard/blob/main/docs/rules/${name}.md`,
 );
 
-export const noImperativeDomState = createRule({
-  name: 'no-imperative-dom-state',
+export const noDomState = createRule({
+  name: 'no-dom-state',
   meta: {
     type: 'suggestion',
     docs: {

@@ -14,7 +14,7 @@ it('works with the default JavaScript parser and preserves imperative focus', as
   );
   expect(result?.messages).toEqual([
     expect.objectContaining({
-      ruleId: '@kingsguard/sentinel/react-no-imperative-dom-state',
+      ruleId: '@kingsguard/sentinel/no-dom-state',
       severity: 2,
     }),
   ]);
@@ -31,8 +31,24 @@ it('loads the React flat preset and reports through ESLint', async () => {
   );
   expect(result?.messages).toEqual([
     expect.objectContaining({
-      ruleId: '@kingsguard/sentinel/react-no-imperative-dom-state',
+      ruleId: '@kingsguard/sentinel/no-dom-state',
       severity: 2,
     }),
   ]);
+});
+
+it('registers only the public guard names with matching documentation', () => {
+  const names = ['no-dom-state', 'no-dom-query', 'no-computed-style'];
+  expect(Object.keys(plugin.rules).sort()).toEqual([...names].sort());
+  expect(plugin.configs.react.rules).toEqual({
+    '@kingsguard/sentinel/no-dom-state': 'error',
+    '@kingsguard/sentinel/no-dom-query': 'error',
+    '@kingsguard/sentinel/no-computed-style': 'error',
+  });
+  for (const name of names) {
+    const rule = plugin.rules[name as keyof typeof plugin.rules];
+    expect(rule?.meta?.docs?.url).toBe(
+      `https://github.com/kingsguard-dev/kingsguard/blob/main/docs/rules/${name}.md`,
+    );
+  }
 });

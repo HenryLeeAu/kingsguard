@@ -1,7 +1,7 @@
 import { afterAll, describe, it } from 'vitest';
 import { RuleTester } from '@typescript-eslint/rule-tester';
 import * as parser from '@typescript-eslint/parser';
-import { noImperativeDomState } from '../src/rules/no-imperative-dom-state.js';
+import { noDomState } from '../src/rules/no-dom-state.js';
 
 RuleTester.afterAll = afterAll;
 RuleTester.describe = describe;
@@ -21,7 +21,7 @@ function Example() {
   const update = () => { ${write} };
   return <${tag} ref={ref} onClick={update} />;
 }`;
-tester.run('react-no-imperative-dom-state', noImperativeDomState, {
+tester.run('no-dom-state', noDomState, {
   valid: [
     example('ref.current.focus();'),
     example('ref.current = null;'),
@@ -182,7 +182,7 @@ const denied = (body: string, count = 1) => ({
   })),
   output: null,
 });
-tester.run('built-in DOM-ref operation allowlist', noImperativeDomState, {
+tester.run('built-in DOM-ref operation allowlist', noDomState, {
   valid: [
     ...methods.flatMap((name) =>
       [

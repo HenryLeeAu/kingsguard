@@ -2,7 +2,7 @@ import { afterAll, describe, expect, it } from 'vitest';
 import { RuleTester } from '@typescript-eslint/rule-tester';
 import * as parser from '@typescript-eslint/parser';
 import { ESLint } from 'eslint';
-import { preferRefOverDomQuery } from '../src/rules/prefer-ref-over-dom-query.js';
+import { noDomQuery } from '../src/rules/no-dom-query.js';
 import plugin from '../src/index.js';
 
 RuleTester.afterAll = afterAll;
@@ -19,7 +19,7 @@ const receivers = [
   "globalThis['document']",
 ];
 const error = { messageId: 'preferRef' as const };
-tester.run('react-prefer-ref-over-dom-query', preferRefOverDomQuery, {
+tester.run('no-dom-query', noDomQuery, {
   valid: [
     'document; window; globalThis; window.document; globalThis.document;',
     'document.createElement("div"); document.addEventListener("click", handler);',
@@ -111,7 +111,7 @@ tester.run('react-prefer-ref-over-dom-query', preferRefOverDomQuery, {
 it.each([1, 2] as const)(
   'supports severity %s and explained ESLint suppression without React',
   async (severity) => {
-    const ruleId = '@kingsguard/sentinel/react-prefer-ref-over-dom-query';
+    const ruleId = '@kingsguard/sentinel/no-dom-query';
     const eslint = new ESLint({
       overrideConfigFile: true,
       overrideConfig: [

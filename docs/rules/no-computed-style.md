@@ -1,4 +1,4 @@
-# react-prefer-state-over-computed-style
+# no-computed-style
 
 Use React state and props as the source of UI state. Reading the browser's
 computed styles reverses that relationship. This rule reports browser
@@ -34,7 +34,7 @@ and its call produce one diagnostic; distinct references each produce their own.
 All file scopes qualify. Helpers, effects, SDK calls, selectors, and arguments do
 not create exemptions. Geometry operations such as `getBoundingClientRect()` are
 outside this rule. React-ref property access is handled by
-`react-no-imperative-dom-state`.
+`no-dom-state`.
 
 ## Limits
 
@@ -57,7 +57,7 @@ add a later config entry to downgrade it to `warn`, or use `off` to disable it:
 ```js
 {
   rules: {
-    '@kingsguard/sentinel/react-prefer-state-over-computed-style': 'warn',
+    '@kingsguard/sentinel/no-computed-style': 'warn',
   },
 }
 ```
@@ -65,7 +65,7 @@ add a later config entry to downgrade it to `warn`, or use `off` to disable it:
 Use a standard ESLint suppression with an explanation for an intentional exception:
 
 ```js
-// eslint-disable-next-line @kingsguard/sentinel/react-prefer-state-over-computed-style -- Legacy SDK requires this browser callback.
+// eslint-disable-next-line @kingsguard/sentinel/no-computed-style -- Legacy SDK requires this browser callback.
 sdk.configure(getComputedStyle);
 ```
 
