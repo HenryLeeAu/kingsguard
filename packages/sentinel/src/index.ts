@@ -22,14 +22,14 @@ const plugin = {
 };
 
 plugin.configs.react = {
-  name: '@kingsguard/sentinel/react',
+  name: '@kingsguard/react',
   files: ['**/*.{js,jsx,mjs,cjs,ts,tsx,mts,cts}'],
   languageOptions: { parserOptions: { ecmaFeatures: { jsx: true } } },
-  plugins: { '@kingsguard/sentinel': plugin },
+  plugins: { '@kingsguard/react': plugin },
   rules: {
-    '@kingsguard/sentinel/no-dom-state': 'error',
-    '@kingsguard/sentinel/no-dom-query': 'error',
-    '@kingsguard/sentinel/no-computed-style': 'error',
+    '@kingsguard/react/no-dom-state': 'error',
+    '@kingsguard/react/no-dom-query': 'error',
+    '@kingsguard/react/no-computed-style': 'error',
   },
 };
 

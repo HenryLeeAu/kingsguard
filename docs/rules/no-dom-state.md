@@ -116,7 +116,7 @@ exempt a direct DOM-member operation from the allow list.
 - An explicit ESLint suppression with a reason is the site-level override:
 
 ```js
-// eslint-disable-next-line @kingsguard/sentinel/no-dom-state -- Required by this widget's integration contract.
+// eslint-disable-next-line @kingsguard/react/no-dom-state -- Required by this widget's integration contract.
 ref.current.dataset.widgetMode = mode;
 ```
 

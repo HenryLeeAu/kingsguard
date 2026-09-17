@@ -57,7 +57,7 @@ add a later config entry to downgrade it to `warn`, or use `off` to disable it:
 ```js
 {
   rules: {
-    '@kingsguard/sentinel/no-computed-style': 'warn',
+    '@kingsguard/react/no-computed-style': 'warn',
   },
 }
 ```
@@ -65,7 +65,7 @@ add a later config entry to downgrade it to `warn`, or use `off` to disable it:
 Use a standard ESLint suppression with an explanation for an intentional exception:
 
 ```js
-// eslint-disable-next-line @kingsguard/sentinel/no-computed-style -- Legacy SDK requires this browser callback.
+// eslint-disable-next-line @kingsguard/react/no-computed-style -- Legacy SDK requires this browser callback.
 sdk.configure(getComputedStyle);
 ```
 

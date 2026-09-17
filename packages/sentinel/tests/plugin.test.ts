@@ -1,5 +1,6 @@
 import { expect, it } from 'vitest';
 import { ESLint } from 'eslint';
+import { defineConfig } from 'eslint/config';
 import * as parser from '@typescript-eslint/parser';
 import plugin from '../src/index.js';
 
@@ -14,7 +15,7 @@ it('works with the default JavaScript parser and preserves imperative focus', as
   );
   expect(result?.messages).toEqual([
     expect.objectContaining({
-      ruleId: '@kingsguard/sentinel/no-dom-state',
+      ruleId: '@kingsguard/react/no-dom-state',
       severity: 2,
     }),
   ]);
@@ -31,7 +32,7 @@ it('loads the React flat preset and reports through ESLint', async () => {
   );
   expect(result?.messages).toEqual([
     expect.objectContaining({
-      ruleId: '@kingsguard/sentinel/no-dom-state',
+      ruleId: '@kingsguard/react/no-dom-state',
       severity: 2,
     }),
   ]);
@@ -40,10 +41,14 @@ it('loads the React flat preset and reports through ESLint', async () => {
 it('registers only the public guard names with matching documentation', () => {
   const names = ['no-dom-state', 'no-dom-query', 'no-computed-style'];
   expect(Object.keys(plugin.rules).sort()).toEqual([...names].sort());
+  expect(Object.keys(plugin.configs.react.plugins ?? {})).toEqual([
+    '@kingsguard/react',
+  ]);
+  expect(plugin.configs.react.plugins?.['@kingsguard/react']).toBe(plugin);
   expect(plugin.configs.react.rules).toEqual({
-    '@kingsguard/sentinel/no-dom-state': 'error',
-    '@kingsguard/sentinel/no-dom-query': 'error',
-    '@kingsguard/sentinel/no-computed-style': 'error',
+    '@kingsguard/react/no-dom-state': 'error',
+    '@kingsguard/react/no-dom-query': 'error',
+    '@kingsguard/react/no-computed-style': 'error',
   });
   for (const name of names) {
     const rule = plugin.rules[name as keyof typeof plugin.rules];
@@ -51,4 +56,26 @@ it('registers only the public guard names with matching documentation', () => {
       `https://github.com/kingsguard-dev/kingsguard/blob/main/docs/rules/${name}.md`,
     );
   }
+});
+
+it('resolves the scoped plugin namespace in string preset references', async () => {
+  const eslint = new ESLint({
+    overrideConfigFile: true,
+    overrideConfig: defineConfig({
+      plugins: { '@kingsguard/react': plugin },
+      extends: ['@kingsguard/react/react'],
+    }),
+  });
+  const [result] = await eslint.lintText(
+    "document.querySelector('#example');",
+    {
+      filePath: 'example.js',
+    },
+  );
+  expect(result?.messages).toEqual([
+    expect.objectContaining({
+      ruleId: '@kingsguard/react/no-dom-query',
+      severity: 2,
+    }),
+  ]);
 });

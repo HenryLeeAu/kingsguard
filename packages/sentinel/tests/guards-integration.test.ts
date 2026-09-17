@@ -3,9 +3,9 @@ import { ESLint } from 'eslint';
 import * as parser from '@typescript-eslint/parser';
 import plugin from '../src/index.js';
 
-const dom = '@kingsguard/sentinel/no-dom-state';
-const query = '@kingsguard/sentinel/no-dom-query';
-const style = '@kingsguard/sentinel/no-computed-style';
+const dom = '@kingsguard/react/no-dom-state';
+const query = '@kingsguard/react/no-dom-query';
+const style = '@kingsguard/react/no-computed-style';
 const cases = [
   { filePath: 'combined.jsx', languageOptions: {} },
   { filePath: 'combined.tsx', languageOptions: { parser } },

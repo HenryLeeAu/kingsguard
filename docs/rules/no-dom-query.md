@@ -55,7 +55,7 @@ export default [
   sentinel.configs.react,
   {
     rules: {
-      '@kingsguard/sentinel/no-dom-query': 'warn',
+      '@kingsguard/react/no-dom-query': 'warn',
     },
   },
 ];
@@ -65,6 +65,6 @@ For a deliberate exception, use an ordinary ESLint suppression with an
 explanation:
 
 ```js
-// eslint-disable-next-line @kingsguard/sentinel/no-dom-query -- Legacy host integration tracked for ref migration.
+// eslint-disable-next-line @kingsguard/react/no-dom-query -- Legacy host integration tracked for ref migration.
 const host = document.getElementById(hostId);
 ```

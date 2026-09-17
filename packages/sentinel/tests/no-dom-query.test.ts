@@ -111,7 +111,7 @@ tester.run('no-dom-query', noDomQuery, {
 it.each([1, 2] as const)(
   'supports severity %s and explained ESLint suppression without React',
   async (severity) => {
-    const ruleId = '@kingsguard/sentinel/no-dom-query';
+    const ruleId = '@kingsguard/react/no-dom-query';
     const eslint = new ESLint({
       overrideConfigFile: true,
       overrideConfig: [

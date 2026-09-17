@@ -128,7 +128,7 @@ tester.run('no-computed-style', noComputedStyle, {
   ],
 });
 
-const ruleId = '@kingsguard/sentinel/no-computed-style';
+const ruleId = '@kingsguard/react/no-computed-style';
 it.each([1, 2] as const)(
   'integrates without React using severity %i and the JavaScript parser',
   async (severity) => {

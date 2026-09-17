@@ -35,13 +35,13 @@ export default [...tseslint.configs.recommended, sentinel.configs.react];
 
 The flat React preset enables all three rules at error severity:
 
-- `@kingsguard/sentinel/no-dom-state`
-- `@kingsguard/sentinel/no-dom-query`
-- `@kingsguard/sentinel/no-computed-style`
+- `@kingsguard/react/no-dom-state`
+- `@kingsguard/react/no-dom-query`
+- `@kingsguard/react/no-computed-style`
 
 No type-aware linting or React runtime dependency is required.
-Legacy `.eslintrc` configuration is not supported. Use
-`sentinel.configs.react`, not `extends: ['plugin:@kingsguard/sentinel/react']`.
+Legacy `.eslintrc` configuration is not supported. Use the flat preset
+`sentinel.configs.react`.
 The React preset belongs to this plugin; it does not require separate
 `@kingsguard/core` or `@kingsguard/axe` packages.
 
@@ -56,9 +56,9 @@ export default [
   sentinel.configs.react,
   {
     rules: {
-      '@kingsguard/sentinel/no-dom-state': 'warn',
-      '@kingsguard/sentinel/no-dom-query': 'warn',
-      '@kingsguard/sentinel/no-computed-style': 'warn',
+      '@kingsguard/react/no-dom-state': 'warn',
+      '@kingsguard/react/no-dom-query': 'warn',
+      '@kingsguard/react/no-computed-style': 'warn',
     },
   },
 ];
@@ -91,7 +91,7 @@ ESLint suppressions. No autofix or custom rule options are provided.
 ## Computed-style guard
 
 The React preset also enables
-`@kingsguard/sentinel/no-computed-style` at error severity.
+`@kingsguard/react/no-computed-style` at error severity.
 It reports browser `getComputedStyle` reads, captured references, and direct static
 extraction in every file scope, including files without React imports or JSX.
 Prefer React state and props as the source of UI state. Local functions and objects
@@ -101,15 +101,20 @@ for detection boundaries, configuration, and explained ESLint suppression.
 
 ## Updating rule names
 
-If you used an earlier unpublished build, update rule overrides and ESLint
-suppression comments using this mapping. Keep the `@kingsguard/sentinel/` prefix.
-The old rule names are no longer registered.
+If you used an earlier unpublished build, update explicit rule settings and
+ESLint suppression comments using this mapping. Previous IDs are no longer
+registered.
 
-| Previous name                            | New name            |
-| ---------------------------------------- | ------------------- |
-| `react-no-imperative-dom-state`          | `no-dom-state`      |
-| `react-prefer-ref-over-dom-query`        | `no-dom-query`      |
-| `react-prefer-state-over-computed-style` | `no-computed-style` |
+| Previous rule ID                                              | New rule ID                           |
+| ------------------------------------------------------------- | ------------------------------------- |
+| `@kingsguard/sentinel/react-no-imperative-dom-state`          | `@kingsguard/react/no-dom-state`      |
+| `@kingsguard/sentinel/react-prefer-ref-over-dom-query`        | `@kingsguard/react/no-dom-query`      |
+| `@kingsguard/sentinel/react-prefer-state-over-computed-style` | `@kingsguard/react/no-computed-style` |
 
-`sentinel.configs.react` enables the new names automatically. All three rules
-remain errors by default.
+If you already adopted the short rule names under `@kingsguard/sentinel/`, replace
+that prefix with `@kingsguard/react/`. If you register the plugin manually, use
+`plugins: { '@kingsguard/react': sentinel }`.
+
+The npm package remains `@kingsguard/eslint-plugin-sentinel`.
+`sentinel.configs.react` registers the new namespace and enables all three rules
+as errors automatically.
