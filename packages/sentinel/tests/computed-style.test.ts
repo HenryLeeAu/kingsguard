@@ -178,3 +178,39 @@ it('honors standard explained ESLint suppression', async () => {
     }),
   ]);
 });
+
+it.each(['JavaScript', 'TypeScript'] as const)(
+  'excludes bare and parenthesized deletion while preserving script reads with %s parser',
+  async (parserName) => {
+    const eslint = new ESLint({
+      overrideConfigFile: true,
+      overrideConfig: [
+        plugin.configs.react,
+        {
+          languageOptions: {
+            sourceType: 'script',
+            ...(parserName === 'TypeScript' ? { parser } : {}),
+          },
+        },
+      ],
+    });
+    const [result] = await eslint.lintText(
+      [
+        'delete getComputedStyle;',
+        'delete (getComputedStyle);',
+        'delete window.getComputedStyle;',
+        'delete (globalThis.getComputedStyle);',
+        'getComputedStyle(node);',
+        'const read = getComputedStyle;',
+        'typeof getComputedStyle;',
+        'window.getComputedStyle(node);',
+      ].join('\n'),
+      { filePath: 'example.js' },
+    );
+    expect(result?.messages).toEqual(
+      [5, 6, 7, 8].map((line) =>
+        expect.objectContaining({ ruleId, severity: 1, line }),
+      ),
+    );
+  },
+);

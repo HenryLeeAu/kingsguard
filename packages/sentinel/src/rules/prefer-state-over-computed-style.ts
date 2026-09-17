@@ -110,6 +110,7 @@ export const preferStateOverComputedStyle = createRule({
             if (
               reference.identifier.name === 'getComputedStyle' &&
               reference.isRead() &&
+              isRead(reference.identifier) &&
               reference.isValueReference !== false &&
               reference.identifier.parent.type !== T.TSTypeQuery &&
               reference.identifier.parent.type !== T.TSQualifiedName &&
