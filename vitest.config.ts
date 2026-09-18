@@ -4,10 +4,10 @@ export default defineConfig({
   test: {
     coverage: {
       provider: 'v8',
-      include: ['packages/*/src/**/*.{ts,tsx,mts,cts}'],
+      include: ['packages/*/src/**/*.{js,ts,tsx,mts,cts}'],
       exclude: [
         '**/*.d.{ts,mts,cts}',
-        '**/*.{test,spec}.{ts,tsx,mts,cts}',
+        '**/*.{test,spec}.{js,ts,tsx,mts,cts}',
         '**/{tests,__tests__,node_modules,dist,coverage,generated}/**',
       ],
       reporter: ['text-summary', 'html', 'lcovonly'],

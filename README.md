@@ -23,8 +23,9 @@ typescript-eslint dependency supports TypeScript versions below 6.1.
 
 Run `pnpm test:coverage` to print a summary of statements, branches, functions,
 and lines, and generate `coverage/index.html` and `coverage/lcov.info`. Open the
-HTML file in a browser to inspect coverage against the original TypeScript source.
-Coverage includes production TypeScript under each package's `src` directory,
+HTML file in a browser to inspect coverage against the original source.
+Coverage includes production JavaScript (`.js`) and TypeScript under each package's
+`src` directory,
 including files no test imports. Tests, declarations, generated directories,
 build output, and dependencies are excluded.
 
