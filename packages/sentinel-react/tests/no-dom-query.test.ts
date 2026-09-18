@@ -115,7 +115,7 @@ it.each([1, 2] as const)(
     const eslint = new ESLint({
       overrideConfigFile: true,
       overrideConfig: [
-        plugin.configs.react,
+        plugin.configs.recommended,
         ...(severity === 1 ? [{ rules: { [ruleId]: 'warn' as const } }] : []),
       ],
     });

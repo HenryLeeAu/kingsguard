@@ -52,7 +52,7 @@ rule to `warn` in a later config entry, or use `off` to disable it:
 
 ```js
 export default [
-  sentinel.configs.react,
+  sentinel.configs.recommended,
   {
     rules: {
       '@kingsguard/react/no-dom-query': 'warn',

@@ -1,12 +1,15 @@
 # Architecture
 
-Sentinel currently has one runtime package and no bundler, task orchestrator, or
-shared core package. pnpm manages workspaces; TypeScript emits ESM and declarations;
+Sentinel provides one ESLint plugin package per framework in this monorepo.
+Currently only `@kingsguard/eslint-plugin-sentinel-react` is implemented.
+There is no bundler, task orchestrator, or shared core package. pnpm manages workspaces; TypeScript emits ESM and declarations;
 ESLint, Vitest, and Prettier provide linting, tests, and formatting.
 
 The React adapter resolves lexical bindings for imports, ref factories, and JSX
 refs. Rules decide which recognized operations merit a diagnostic. The plugin
-entry point owns rule registration and framework presets.
+entry point owns React rule registration and `configs.recommended`.
+The rule namespace is `@kingsguard/react`. Users install only the framework
+package they need.
 
 This follows the [typescript-eslint custom-rule API](https://typescript-eslint.io/developers/custom-rules/)
 and [ESLint flat plugin configuration](https://eslint.org/docs/latest/extend/plugins).
@@ -14,9 +17,10 @@ and [ESLint flat plugin configuration](https://eslint.org/docs/latest/extend/plu
 ## Extension points
 
 - Add React rules alongside the existing rule and reuse adapter recognition.
-- Add Angular or Vue adapters only when their parser and template ownership
-  semantics are understood. Give each framework its own preset and tests; React
-  JSX recognition must not become a universal ownership assumption.
+- Add Angular or Vue support in separate packages only when their parser and
+  template ownership semantics are understood. Each package owns its dependencies,
+  parser integration, recommended preset, namespace, tests, and release version.
+  React JSX recognition must not become a universal ownership assumption.
 - Extract `@kingsguard/core` when multiple products actually need shared concepts.
   Avoid forcing unrelated framework ASTs into an interface prematurely.
 - Add `@kingsguard/axe` as a separate runtime accessibility integration when
