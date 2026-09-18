@@ -1,6 +1,6 @@
-# Sentinel
+# Sentinel React
 
-Framework-aware ESLint rules for declarative UIs, part of Kingsguard.
+React ESLint rules for declarative UIs, part of Kingsguard.
 
 ## Local setup
 
@@ -9,7 +9,7 @@ This package is an unpublished scaffold. From the repository root:
 ```sh
 pnpm install
 pnpm build
-pnpm --filter @kingsguard/eslint-plugin-sentinel pack
+pnpm --filter @kingsguard/eslint-plugin-sentinel-react pack
 ```
 
 Install the generated tarball into a consuming project with ESLint 10 and a
@@ -18,9 +18,9 @@ and requires Node.js 22.12+.
 
 ```js
 // eslint.config.js (ES module)
-import sentinel from '@kingsguard/eslint-plugin-sentinel';
+import sentinel from '@kingsguard/eslint-plugin-sentinel-react';
 
-export default [sentinel.configs.react];
+export default [sentinel.configs.recommended];
 ```
 
 For TypeScript/TSX, install `typescript-eslint` in the consuming project and use
@@ -28,9 +28,9 @@ its parser through the recommended configuration:
 
 ```js
 import tseslint from 'typescript-eslint';
-import sentinel from '@kingsguard/eslint-plugin-sentinel';
+import sentinel from '@kingsguard/eslint-plugin-sentinel-react';
 
-export default [...tseslint.configs.recommended, sentinel.configs.react];
+export default [...tseslint.configs.recommended, sentinel.configs.recommended];
 ```
 
 The flat React preset enables all three rules at error severity:
@@ -41,7 +41,7 @@ The flat React preset enables all three rules at error severity:
 
 No type-aware linting or React runtime dependency is required.
 Legacy `.eslintrc` configuration is not supported. Use the flat preset
-`sentinel.configs.react`.
+`sentinel.configs.recommended`.
 The React preset belongs to this plugin; it does not require separate
 `@kingsguard/core` or `@kingsguard/axe` packages.
 
@@ -50,10 +50,10 @@ default. For gradual adoption, override selected rules to `warn` in a later
 flat-config entry, or use `off` to disable a rule:
 
 ```js
-import sentinel from '@kingsguard/eslint-plugin-sentinel';
+import sentinel from '@kingsguard/eslint-plugin-sentinel-react';
 
 export default [
-  sentinel.configs.react,
+  sentinel.configs.recommended,
   {
     rules: {
       '@kingsguard/react/no-dom-state': 'warn',
@@ -115,6 +115,17 @@ If you already adopted the short rule names under `@kingsguard/sentinel/`, repla
 that prefix with `@kingsguard/react/`. If you register the plugin manually, use
 `plugins: { '@kingsguard/react': sentinel }`.
 
-The npm package remains `@kingsguard/eslint-plugin-sentinel`.
-`sentinel.configs.react` registers the new namespace and enables all three rules
+The React package is `@kingsguard/eslint-plugin-sentinel-react`.
+`sentinel.configs.recommended` registers the new namespace and enables all three rules
 as errors automatically.
+
+## Updating the package and preset
+
+Earlier unpublished builds used `@kingsguard/eslint-plugin-sentinel` and
+`sentinel.configs.react`. Install `@kingsguard/eslint-plugin-sentinel-react`,
+update the import, and use `sentinel.configs.recommended` instead. The old package
+and preset are not provided as compatibility aliases.
+
+The `@kingsguard/react` namespace and its three rule IDs are unchanged.
+Each future framework integration will have its own package; this package
+contains only React support.

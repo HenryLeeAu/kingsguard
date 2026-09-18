@@ -4,7 +4,7 @@ import { noComputedStyle } from './rules/no-computed-style.js';
 import { noDomState } from './rules/no-dom-state.js';
 
 const plugin = {
-  meta: { name: '@kingsguard/eslint-plugin-sentinel', version: '0.1.0' },
+  meta: { name: '@kingsguard/eslint-plugin-sentinel-react', version: '0.1.0' },
   // typescript-eslint uses a narrower TS AST context than ESLint's generic
   // plugin API. Keep that type boundary here; integration tests exercise it.
   rules: {
@@ -18,10 +18,10 @@ const plugin = {
       ESLint.Plugin['rules']
     >[string],
   },
-  configs: {} as { react: Linter.Config },
+  configs: {} as { recommended: Linter.Config },
 };
 
-plugin.configs.react = {
+plugin.configs.recommended = {
   name: '@kingsguard/react',
   files: ['**/*.{js,jsx,mjs,cjs,ts,tsx,mts,cts}'],
   languageOptions: { parserOptions: { ecmaFeatures: { jsx: true } } },

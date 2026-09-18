@@ -135,7 +135,7 @@ it.each([1, 2] as const)(
     const eslint = new ESLint({
       overrideConfigFile: true,
       overrideConfig: [
-        plugin.configs.react,
+        plugin.configs.recommended,
         ...(severity === 1 ? [{ rules: { [ruleId]: 'warn' as const } }] : []),
       ],
     });
@@ -153,7 +153,7 @@ it.each([1, 2] as const)(
 it('honors standard explained ESLint suppression', async () => {
   const eslint = new ESLint({
     overrideConfigFile: true,
-    overrideConfig: [plugin.configs.react],
+    overrideConfig: [plugin.configs.recommended],
   });
   const [result] = await eslint.lintText(
     `// eslint-disable-next-line ${ruleId} -- Legacy SDK requires a computed-style callback.\nsdk.configure(getComputedStyle);\nwindow.getComputedStyle(node);`,
@@ -181,7 +181,7 @@ it.each(['JavaScript', 'TypeScript'] as const)(
     const eslint = new ESLint({
       overrideConfigFile: true,
       overrideConfig: [
-        plugin.configs.react,
+        plugin.configs.recommended,
         {
           languageOptions: {
             sourceType: 'script',

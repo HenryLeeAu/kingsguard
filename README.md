@@ -23,7 +23,7 @@ typescript-eslint dependency supports TypeScript versions below 6.1.
 
 ```text
 packages/
-  sentinel/
+  sentinel-react/
     src/
       adapters/react.ts       React binding and ref recognition
       rules/                  ESLint diagnostics
@@ -34,8 +34,8 @@ docs/
   architecture.md             Boundaries and future extensions
 ```
 
-The workspace starts with one real package, `@kingsguard/eslint-plugin-sentinel`.
-See its [setup instructions](packages/sentinel/README.md) and the first rule,
+The workspace starts with one real package, `@kingsguard/eslint-plugin-sentinel-react`.
+See its [setup instructions](packages/sentinel-react/README.md) and the first rule,
 [no-dom-state](docs/rules/no-dom-state.md).
 
 Angular, Vue, and axe-core are future work, not implemented integrations.

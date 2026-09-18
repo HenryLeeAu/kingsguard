@@ -34,7 +34,7 @@ it.each(cases)(
   async ({ filePath, languageOptions }) => {
     const eslint = new ESLint({
       overrideConfigFile: true,
-      overrideConfig: [plugin.configs.react, { languageOptions }],
+      overrideConfig: [plugin.configs.recommended, { languageOptions }],
     });
     const [result] = await eslint.lintText(mixed, { filePath });
     expect(result?.errorCount).toBe(9);
@@ -63,7 +63,7 @@ it.each(cases)(
     const eslint = new ESLint({
       overrideConfigFile: true,
       overrideConfig: [
-        plugin.configs.react,
+        plugin.configs.recommended,
         {
           languageOptions,
           rules: { [dom]: 'warn', [query]: 'warn', [style]: 'warn' },
@@ -86,7 +86,7 @@ it.each(cases)(
   async ({ filePath, languageOptions }) => {
     const eslint = new ESLint({
       overrideConfigFile: true,
-      overrideConfig: [plugin.configs.react, { languageOptions }],
+      overrideConfig: [plugin.configs.recommended, { languageOptions }],
     });
     const [result] = await eslint.lintText(
       `import {useRef} from 'react';
@@ -134,7 +134,7 @@ it.each(cases)(
     const eslint = new ESLint({
       overrideConfigFile: true,
       overrideConfig: [
-        plugin.configs.react,
+        plugin.configs.recommended,
         {
           languageOptions,
           rules: { [dom]: 'off', [query]: 'off', [style]: 'off' },
