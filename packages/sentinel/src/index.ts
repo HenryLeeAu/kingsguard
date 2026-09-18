@@ -1,38 +1,35 @@
 import type { ESLint, Linter } from 'eslint';
-import { preferRefOverDomQuery } from './rules/prefer-ref-over-dom-query.js';
-import { preferStateOverComputedStyle } from './rules/prefer-state-over-computed-style.js';
-import { noImperativeDomState } from './rules/no-imperative-dom-state.js';
+import { noDomQuery } from './rules/no-dom-query.js';
+import { noComputedStyle } from './rules/no-computed-style.js';
+import { noDomState } from './rules/no-dom-state.js';
 
 const plugin = {
   meta: { name: '@kingsguard/eslint-plugin-sentinel', version: '0.1.0' },
   // typescript-eslint uses a narrower TS AST context than ESLint's generic
   // plugin API. Keep that type boundary here; integration tests exercise it.
   rules: {
-    'react-prefer-ref-over-dom-query':
-      preferRefOverDomQuery as unknown as NonNullable<
-        ESLint.Plugin['rules']
-      >[string],
-    'react-prefer-state-over-computed-style':
-      preferStateOverComputedStyle as unknown as NonNullable<
-        ESLint.Plugin['rules']
-      >[string],
-    'react-no-imperative-dom-state':
-      noImperativeDomState as unknown as NonNullable<
-        ESLint.Plugin['rules']
-      >[string],
+    'no-dom-query': noDomQuery as unknown as NonNullable<
+      ESLint.Plugin['rules']
+    >[string],
+    'no-computed-style': noComputedStyle as unknown as NonNullable<
+      ESLint.Plugin['rules']
+    >[string],
+    'no-dom-state': noDomState as unknown as NonNullable<
+      ESLint.Plugin['rules']
+    >[string],
   },
   configs: {} as { react: Linter.Config },
 };
 
 plugin.configs.react = {
-  name: '@kingsguard/sentinel/react',
+  name: '@kingsguard/react',
   files: ['**/*.{js,jsx,mjs,cjs,ts,tsx,mts,cts}'],
   languageOptions: { parserOptions: { ecmaFeatures: { jsx: true } } },
-  plugins: { '@kingsguard/sentinel': plugin },
+  plugins: { '@kingsguard/react': plugin },
   rules: {
-    '@kingsguard/sentinel/react-no-imperative-dom-state': 'error',
-    '@kingsguard/sentinel/react-prefer-ref-over-dom-query': 'error',
-    '@kingsguard/sentinel/react-prefer-state-over-computed-style': 'error',
+    '@kingsguard/react/no-dom-state': 'error',
+    '@kingsguard/react/no-dom-query': 'error',
+    '@kingsguard/react/no-computed-style': 'error',
   },
 };
 

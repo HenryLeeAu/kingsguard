@@ -36,7 +36,7 @@ docs/
 
 The workspace starts with one real package, `@kingsguard/eslint-plugin-sentinel`.
 See its [setup instructions](packages/sentinel/README.md) and the first rule,
-[react-no-imperative-dom-state](docs/rules/no-imperative-dom-state.md).
+[no-dom-state](docs/rules/no-dom-state.md).
 
 Angular, Vue, and axe-core are future work, not implemented integrations.
 See the [architecture notes](docs/architecture.md) before extending the project.

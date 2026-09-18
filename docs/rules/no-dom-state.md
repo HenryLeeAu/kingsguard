@@ -1,4 +1,4 @@
-# react-no-imperative-dom-state
+# no-dom-state
 
 Keep UI state in React props and state. Recognized DOM refs use one built-in
 operation allow list; all other direct DOM-member operations report.
@@ -116,7 +116,7 @@ exempt a direct DOM-member operation from the allow list.
 - An explicit ESLint suppression with a reason is the site-level override:
 
 ```js
-// eslint-disable-next-line @kingsguard/sentinel/react-no-imperative-dom-state -- Required by this widget's integration contract.
+// eslint-disable-next-line @kingsguard/react/no-dom-state -- Required by this widget's integration contract.
 ref.current.dataset.widgetMode = mode;
 ```
 

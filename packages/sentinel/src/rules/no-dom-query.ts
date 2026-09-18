@@ -12,11 +12,11 @@ const queryMethods = new Set([
 ]);
 const createRule = ESLintUtils.RuleCreator(
   (name) =>
-    `https://github.com/HenryLeeAu/kingsguard/blob/main/docs/rules/${name}.md`,
+    `https://github.com/kingsguard-dev/kingsguard/blob/main/docs/rules/${name}.md`,
 );
 
-export const preferRefOverDomQuery = createRule({
-  name: 'prefer-ref-over-dom-query',
+export const noDomQuery = createRule({
+  name: 'no-dom-query',
   meta: {
     type: 'suggestion',
     docs: {

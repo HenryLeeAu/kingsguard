@@ -7,7 +7,7 @@ import { propertyName, resolve, unwrap } from '../adapters/react.js';
 
 const createRule = ESLintUtils.RuleCreator(
   (name) =>
-    `https://github.com/HenryLeeAu/kingsguard/blob/main/docs/rules/${name}.md`,
+    `https://github.com/kingsguard-dev/kingsguard/blob/main/docs/rules/${name}.md`,
 );
 
 /** Assignment targets do not retrieve the method; compound updates do. */
@@ -44,8 +44,8 @@ function isRead(node: TSESTree.Node): boolean {
   return true;
 }
 
-export const preferStateOverComputedStyle = createRule({
-  name: 'prefer-state-over-computed-style',
+export const noComputedStyle = createRule({
+  name: 'no-computed-style',
   meta: {
     type: 'suggestion',
     docs: {

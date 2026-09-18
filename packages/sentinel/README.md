@@ -35,13 +35,13 @@ export default [...tseslint.configs.recommended, sentinel.configs.react];
 
 The flat React preset enables all three rules at error severity:
 
-- `@kingsguard/sentinel/react-no-imperative-dom-state`
-- `@kingsguard/sentinel/react-prefer-ref-over-dom-query`
-- `@kingsguard/sentinel/react-prefer-state-over-computed-style`
+- `@kingsguard/react/no-dom-state`
+- `@kingsguard/react/no-dom-query`
+- `@kingsguard/react/no-computed-style`
 
 No type-aware linting or React runtime dependency is required.
-Legacy `.eslintrc` configuration is not supported. Use
-`sentinel.configs.react`, not `extends: ['plugin:@kingsguard/sentinel/react']`.
+Legacy `.eslintrc` configuration is not supported. Use the flat preset
+`sentinel.configs.react`.
 The React preset belongs to this plugin; it does not require separate
 `@kingsguard/core` or `@kingsguard/axe` packages.
 
@@ -56,9 +56,9 @@ export default [
   sentinel.configs.react,
   {
     rules: {
-      '@kingsguard/sentinel/react-no-imperative-dom-state': 'warn',
-      '@kingsguard/sentinel/react-prefer-ref-over-dom-query': 'warn',
-      '@kingsguard/sentinel/react-prefer-state-over-computed-style': 'warn',
+      '@kingsguard/react/no-dom-state': 'warn',
+      '@kingsguard/react/no-dom-query': 'warn',
+      '@kingsguard/react/no-computed-style': 'warn',
     },
   },
 ];
@@ -72,29 +72,49 @@ calls; scalar geometry/scroll reads; and scroll-position writes. Other direct
 member reads, calls, and writes report. Prefer JSX props derived from React
 state. Ordinary data refs remain outside this DOM-ref rule.
 
-See the [full rule documentation](https://github.com/kingsguard-dev/kingsguard/blob/main/docs/rules/no-imperative-dom-state.md)
+See the [full rule documentation](https://github.com/kingsguard-dev/kingsguard/blob/main/docs/rules/no-dom-state.md)
 for exact coverage, exceptions, and limitations. No automatic fix is offered.
 
 ## Browser document queries
 
-`react-prefer-ref-over-dom-query` reports browser document `getElementById`,
+`no-dom-query` reports browser document `getElementById`,
 `querySelector`, and `querySelectorAll` accesses, including method retrieval and
 direct static destructuring. It applies throughout enabled files, including files
 without React imports or JSX. Local bindings shadowing browser globals remain
 allowed. Prefer React refs for element access; effects and SDK calls are not
 automatic exemptions.
 
-See [query rule coverage and limitations](https://github.com/HenryLeeAu/kingsguard/blob/main/docs/rules/prefer-ref-over-dom-query.md)
+See [query rule coverage and limitations](https://github.com/kingsguard-dev/kingsguard/blob/main/docs/rules/no-dom-query.md)
 for supported receivers, detection gaps, severity configuration, and explained
 ESLint suppressions. No autofix or custom rule options are provided.
 
 ## Computed-style guard
 
 The React preset also enables
-`@kingsguard/sentinel/react-prefer-state-over-computed-style` at error severity.
+`@kingsguard/react/no-computed-style` at error severity.
 It reports browser `getComputedStyle` reads, captured references, and direct static
 extraction in every file scope, including files without React imports or JSX.
 Prefer React state and props as the source of UI state. Local functions and objects
 that shadow browser globals are exempt. See the
-[computed-style rule documentation](https://github.com/HenryLeeAu/kingsguard/blob/main/docs/rules/prefer-state-over-computed-style.md)
+[computed-style rule documentation](https://github.com/kingsguard-dev/kingsguard/blob/main/docs/rules/no-computed-style.md)
 for detection boundaries, configuration, and explained ESLint suppression.
+
+## Updating rule names
+
+If you used an earlier unpublished build, update explicit rule settings and
+ESLint suppression comments using this mapping. Previous IDs are no longer
+registered.
+
+| Previous rule ID                                              | New rule ID                           |
+| ------------------------------------------------------------- | ------------------------------------- |
+| `@kingsguard/sentinel/react-no-imperative-dom-state`          | `@kingsguard/react/no-dom-state`      |
+| `@kingsguard/sentinel/react-prefer-ref-over-dom-query`        | `@kingsguard/react/no-dom-query`      |
+| `@kingsguard/sentinel/react-prefer-state-over-computed-style` | `@kingsguard/react/no-computed-style` |
+
+If you already adopted the short rule names under `@kingsguard/sentinel/`, replace
+that prefix with `@kingsguard/react/`. If you register the plugin manually, use
+`plugins: { '@kingsguard/react': sentinel }`.
+
+The npm package remains `@kingsguard/eslint-plugin-sentinel`.
+`sentinel.configs.react` registers the new namespace and enables all three rules
+as errors automatically.
