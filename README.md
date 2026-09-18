@@ -28,8 +28,8 @@ Coverage includes production TypeScript under each package's `src` directory,
 including files no test imports. Tests, declarations, generated directories,
 build output, and dependencies are excluded.
 
-CI collects coverage once, on Node 22, for pushes and pull requests. In GitHub,
-open **Actions → CI → the run**, download the **coverage-node-22** artifact,
+CI collects coverage once, on Node 24, for pushes and pull requests. In GitHub,
+open **Actions → CI → the run**, download the **coverage-node-24** artifact,
 extract it, and open `index.html`; `lcov.info` is included in the same archive.
 Reports are generated only after successful checks and tests. Coverage execution
 or missing reports fail the job; no minimum coverage threshold is enforced.
