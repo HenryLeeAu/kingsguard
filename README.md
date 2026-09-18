@@ -21,6 +21,23 @@ pnpm test:watch
 the same checks on Node 22 and 24. TypeScript stays on 5.9 while the
 typescript-eslint dependency supports TypeScript versions below 6.1.
 
+### Test coverage
+
+Run `pnpm test:coverage` to print a summary of statements, branches, functions,
+and lines, and generate `coverage/index.html` and `coverage/lcov.info`. Open the
+HTML file in a browser to inspect coverage against the original source.
+Coverage includes production JavaScript (`.js`) and TypeScript under each package's
+`src` directory,
+including files no test imports. Tests, declarations, generated directories,
+build output, and dependencies are excluded.
+
+CI collects coverage once, on Node 24, for pushes and pull requests. In GitHub,
+open **Actions → CI → the run**, download the **coverage-node-24** artifact,
+extract it, and open `index.html`; `lcov.info` is included in the same archive.
+Reports are generated only after successful checks and tests. Coverage execution
+or missing reports fail the job; no minimum coverage threshold is enforced.
+Generated reports are ignored by Git and excluded from published package files.
+
 ## Workspace
 
 ```text
