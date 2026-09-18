@@ -7,7 +7,9 @@ that helps keep UI state declarative, starting with React.
 
 ## Development
 
-Requires Node.js 22.12+ and pnpm 10.12.1 (see `packageManager`).
+Use Node.js 22.13+ within 22.x or Node.js 24, with pnpm 10.12.1
+(see `packageManager`). This includes the Changesets tooling requirements;
+the published plugin has its own runtime requirements.
 
 ```sh
 pnpm install
@@ -47,6 +49,9 @@ Add a rule with valid and invalid cases, document its limits, and run `pnpm chec
 Prefer evidence of framework ownership over broad API blacklists. Keep framework
 recognition in adapters and avoid introducing shared packages until there are
 multiple consumers. This initial scaffold has no publishing automation.
+
+See [Changesets](docs/changesets.md) for recording package changes and preparing
+versions and changelogs.
 
 ## License
 
