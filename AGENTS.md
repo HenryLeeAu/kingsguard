@@ -63,6 +63,11 @@ starting with React.
 
 ## Independent slice review
 
+- Before dispatching reviewers, present the review scope, exclusions, acceptance
+  criteria, and required validation evidence to the user. Wait for the user to
+  confirm these conditions before starting the review. Apply this requirement to
+  both specification and implementation reviews. If the conditions change
+  materially, obtain confirmation again before reviewing the changed scope.
 - Each slice requires two independent reviewers at the specification gate and
   again for the completed implementation (or design deliverable). Use fresh
   contexts, separate from the implementer, with the same specification snapshot,
