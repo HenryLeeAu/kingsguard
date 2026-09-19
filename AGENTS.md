@@ -61,6 +61,50 @@ starting with React.
   integration remains outstanding, track it explicitly rather than implying
   that closing a slice means it has landed.
 
+## TypeSafe specification checks
+
+- Use the `typesafe-ai` skill to cross-check semantic claims, conditional
+  boundaries, and acceptance-test clarity in new or materially changed slice
+  specifications before their formal review. Read the relevant live docs.
+  Use ordinary code for exact checks; keep this preflight focused on judgments
+  that depend on meaning. If the skill, credentials, or API are unavailable,
+  record the missing check and continue source-based review without claiming
+  TypeSafe ran or substituting it for a required reviewer.
+- Pin the specification and relevant source versions. Supply approved policies,
+  confirmed decisions, draft text, and concrete scenarios, clearly separating
+  facts, proposals, assumptions, and open decisions. Record the coordinating
+  agent's initial judgment and assumptions separately; do not send its conclusion,
+  expected labels, or other reviewers' answers to TypeSafe.
+- Ask one narrow question at a time in each question definition, with explicit
+  criteria and an undetermined outcome. Batch independent questions over the same
+  relevant state. Distinguish whether conditions can overlap from whether rules
+  conflict when they overlap. Do not silently assume missing domain facts or
+  treat a request to define policy as an adopted decision.
+- Inspect the full answer distribution and separate confidence, not just the
+  selected label. Near-tied leading options (for example, 0.46 versus 0.44), low
+  confidence, or disagreement with the agent's judgment trigger reconsideration
+  of the question, context, criteria, and expected answer. Check source evidence,
+  competing interpretations, and counterexamples before declaring either model
+  wrong. These signals are reasons to investigate, not proof of a defect.
+- Confidence describes answer concentration, not correctness or specification
+  quality; high-confidence undetermined can be appropriate. Do not invent model
+  reasoning or use an unvalidated confidence threshold as an approval gate.
+  The coordinator investigates first and asks the user only for a specific
+  unresolved product decision, without inventing policy to settle disagreement.
+- Keep an already documented open decision in its existing slice. Add a verified
+  small omission to that slice; create a separate design slice only when a new
+  decision exceeds its scope or needs independent work. Record confirmed
+  decisions and acceptance cases, and block only implementation that actually
+  depends on them. Do not split tasks solely because confidence is low.
+- Record inputs or reproducible references, question criteria, model version,
+  answers, probabilities, confidence, and the coordinator's evidence-based
+  disposition with the existing task. Keep credentials out of records. Bound
+  requests, reuse unchanged results when evidence and question meaning are
+  unchanged, and never rerun merely to seek a preferred answer.
+- TypeSafe provides advisory evidence and does not replace the independent
+  reviews below. Its output alone cannot approve policy, close a task, release a
+  review gate, authorize implementation, merge a PR, or publish a package.
+
 ## Independent slice review
 
 - Before dispatching reviewers, present the review scope, exclusions, acceptance
