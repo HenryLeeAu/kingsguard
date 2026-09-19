@@ -100,6 +100,48 @@ starting with React.
   Prior single-review results remain evidence but do not satisfy this two-reviewer
   policy on their own. Review approval does not authorize merging a PR.
 
+## Pull request titles
+
+- Use `type(scope): description` for every PR title, written in English.
+- Choose a lowercase type: `feat`, `fix`, `docs`, `test`, `ci`, `chore`, or
+  `refactor`. Use a short scope that identifies the affected feature or area.
+- Start the description with an imperative verb and state the concrete change.
+  Keep it concise and update it if the PR scope changes.
+- Examples: `chore(release): set up Changesets`,
+  `ci(macos): test on Node 22 and 24`, and
+  `docs(agents): require release change records`.
+- This convention applies to PR titles; it does not change branch naming or
+  determine package version bumps.
+
+## Pull request descriptions
+
+- Write in plain English. Start with one short sentence explaining what the PR
+  changes and why it matters.
+- Use Markdown subheadings to separate sections. Default to `Changes` and
+  `Validation`; add sections such as `Commands` only when they help the reader.
+- Describe concrete behavior with short paragraphs or bullets. Use a table when
+  comparing several commands and their purposes. Avoid dense implementation
+  detail, unexplained jargon, and conversational history.
+- Report checks actually run and their results. Link CI evidence when available,
+  and clearly label pending checks or reviews. Mention relevant limitations and
+  deferred work without implying that they are implemented.
+- Keep the description aligned with the final diff after scope or naming changes.
+
+## After a pull request is merged
+
+- Verify that the PR is merged, then clean up its remote branch, local task
+  branch, and associated task worktree. Prune stale remote-tracking references.
+  Clean up only that PR's branches and worktree; never delete the default branch
+  or unrelated work.
+- Before deleting local resources, check for uncommitted or untracked work and
+  commits added after the merged PR head. Preserve any such work and report what
+  prevented cleanup. Verify the PR head when squash or rebase merging makes Git
+  ancestry checks insufficient; do not force removal merely to bypass a warning.
+- Run worktree removal from another checkout. Keep the primary project directory;
+  if it is on the merged task branch, switch it to the default branch only when
+  safe before deleting the task branch. Never remove a worktree still in use by
+  another active task. Report completed cleanup and anything retained.
+
 ## Completion requirements
 
 - When adding or changing a rule, include valid cases, invalid cases, and tests
