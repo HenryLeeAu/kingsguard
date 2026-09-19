@@ -1,5 +1,4 @@
 # Changesets
 
-Record package changes here with `pnpm changeset`. Commit the generated Markdown
-file alongside the implementation. See the [contributor guide](../docs/changesets.md)
-for release-worthy changes, status checks, and version preparation.
+This directory stores package change records and Changesets configuration.
+See the [Changesets documentation](https://changesets.dev/) for tool reference.
