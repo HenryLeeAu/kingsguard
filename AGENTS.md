@@ -106,6 +106,19 @@ starting with React.
   covering potential false positives.
 - Update relevant documentation and explain detection boundaries and limitations.
 - Run pnpm check and resolve issues introduced by your changes.
+- Include a changeset with the PR when changes affect a published package's
+  behavior, API, shipped files, or consumer compatibility. Name the affected
+  package, describe the user-facing change, and choose the release type using
+  the agreed release policy. Ask about unclear release semantics rather than
+  guessing the version bump.
+- Internal-only changes may omit a changeset; explain why in the PR. Judge the
+  actual package impact, not just file extensions. Release-preparation changes
+  that only consume approved changesets do not require another changeset.
+- Check the available package scripts before creating the record. Use
+  `pnpm release:add-change` when provided, or `pnpm exec changeset` when the
+  repository-local Changesets CLI is installed. Include the generated file in
+  the implementation commit. Do not change package versions or publish as part
+  of recording a change, and do not rely on CI alone to catch missing records.
 - Unless explicitly instructed otherwise, commit completed changes on a task
   branch, push the branch, and create a pull request (or update the existing pull
   request for that task). Include a summary, validation results, and known
